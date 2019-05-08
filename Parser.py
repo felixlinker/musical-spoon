@@ -56,10 +56,10 @@ def parse(filename):
                      v.set_node_label(temp[1])
                 vertex_list.append(Vertex(temp[0]))
             elif c == 2:
-                e = Edge(temp[0], temp[1])
-                if edges_label:
+                e = Edge(temp[0], temp[1])  # unnoetig, weil Edge-Objekt 3 Zeilen weiter unten erstellt wird
+                if edges_label:             # funktioniert so auch noch nicht
                     e.set_label(temp[2])
-                edge_list.append(Edge(vertex_list[(int(temp[0])-1)], vertex_list[(int(temp[1])-1)]))
+                edge_list.append(Edge(vertex_list[(int(temp[0])-1)], vertex_list[(int(temp[1])-1)]))    # so funktioniert das nur solange die reihenfolge zufällig stimmt und solange die kanten Nummern als Namen haben
 
     graph = Graph(vertex_list, edge_list)
     return graph
