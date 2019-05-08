@@ -51,22 +51,19 @@ def parse(filename):
                     else:
                         directed_graph = False
             elif c == 1:
-                # v = Vertex(temp[0])
-                # if nodes_label:
-                #     v.set_node_label(temp[1])
+                v = Vertex(temp[0])
+                if nodes_label:
+                     v.set_node_label(temp[1])
                 vertex_list.append(Vertex(temp[0]))
             elif c == 2:
-                # e = Edge(temp[0], temp[1])
-                # if edges_label:
-                #     e.set_label(temp[2])
-                # v = vertex_list.__getattribute__(temp[0]) spaeter testen
-                # edge_list.append(Edge(vertex_list[vertex_list.index(temp[0])], vertex_list[vertex_list.index(temp[1])])) spaeter testen
-                edge_list.append(Edge(temp[0], temp[1]))
+                e = Edge(temp[0], temp[1])
+                if edges_label:
+                    e.set_label(temp[2])
+                edge_list.append(Edge(vertex_list[(int(temp[0])-1)], vertex_list[(int(temp[1])-1)]))
 
-    # print(n_of_nodes, n_of_edges, nodes_label, edges_label, directed_graph, sep='\t')
     graph = Graph(vertex_list, edge_list)
     return graph
 
 
-parse('isomorph_triangle.graph')
+
 
