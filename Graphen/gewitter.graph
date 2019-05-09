@@ -1,0 +1,13 @@
+#nodes;3
+#edges;3
+Nodes labelled;False
+Edges labelled;True
+Directed graph;False
+
+Regen;
+Donner;
+Blitz;
+
+Regen;Donner;one
+Regen;Blitz;two
+Donner;Blitz;three
