@@ -1,36 +1,10 @@
 import random
 import timeit
 
-from Edge import Edge
-from Graph import Graph
-from Vertex import Vertex
+
 from Parser import parse
 
-# graph = parse('isomorph_triangle.graph')
-
-v0 = Vertex(0)
-v1 = Vertex(1)
-v2 = Vertex(2)
-v3 = Vertex(3)
-v4 = Vertex(4)
-v5 = Vertex(5)
-
-e0_1 = Edge(v0, v1)
-e0_4 = Edge(v0, v4)
-e1_4 = Edge(v1, v4)
-e1_2 = Edge(v1, v2)
-e4_3 = Edge(v4, v3)
-e2_3 = Edge(v2, v3)
-e3_5 = Edge(v3, v5)
-
-vertex_list = []
-vertex_list.extend((v0, v1, v2, v3, v4, v5))
-edge_list = []
-edge_list.extend((e0_1, e0_4, e1_2, e1_4, e2_3, e3_5, e4_3))
-
-graph = Graph(vertex_list, edge_list)
-
-
+graph = parse('Graphen/graph4.graph')
 
 def print_vertex_list(v_list):
     print('Clique found!: ', end='')
@@ -117,53 +91,4 @@ print('time: ', stop - start)
 
 
 
-
-#
-
-# vertex_list = []
-# vertex_list.extend((Vertex(1), Vertex(2), Vertex(3)))
-# edge_list = []
-# edge_list.extend((Edge(vertex_list[0], vertex_list[1]), Edge(vertex_list[1], vertex_list[2]), Edge(vertex_list[0], vertex_list[2])))
-# graph = Graph(vertex_list, edge_list)
-
-
-
-
-# v0 = Vertex(0)
-# v1 = Vertex(1)
-# v2 = Vertex(2)
-# v3 = Vertex(3)
-# v4 = Vertex(4)
-# v5 = Vertex(5)
-#
-# e0_1 = Edge(v0, v1)
-# e0_4 = Edge(v0, v4)
-# e1_4 = Edge(v1, v4)
-# e1_2 = Edge(v1, v2)
-# e4_3 = Edge(v4, v3)
-# e2_3 = Edge(v2, v3)
-# e3_5 = Edge(v3, v5)
-#
-# vertex_list = []
-# vertex_list.extend((v0, v1, v2, v3, v4, v5))
-# edge_list = []
-# edge_list.extend((e0_1, e0_4, e1_2, e1_4, e2_3, e3_5, e4_3))
-#
-# graph = Graph(vertex_list, edge_list)
-#
-#
-# v3 = Vertex(3)
-# v1 = Vertex(1)
-# v2 = Vertex(2)
-#
-# e1_2 = Edge(v1, v2)
-# e2_3 = Edge(v2, v3)
-# e1_3 = Edge(v1, v3)
-#
-# vertex_list = []
-# vertex_list.extend((v1, v2, v3))
-# edge_list = []
-# edge_list.extend((e1_2, e2_3, e1_3))
-#
-# graph = Graph(vertex_list, edge_list)
 
