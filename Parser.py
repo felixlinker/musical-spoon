@@ -4,7 +4,7 @@ Uses a graph-file as input and creates a Graph-Object out of Vertex and Edge Obj
 from Vertex import Vertex
 from Edge import Edge
 from Graph import Graph
-
+#penis
 
 def parse(filename):
 
