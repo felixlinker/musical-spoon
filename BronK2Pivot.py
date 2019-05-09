@@ -4,7 +4,7 @@ import timeit
 
 from Parser import parse
 
-graph = parse('Graphen/graph4.graph')   # pfad genau angeben!
+graph = parse('Graphen/graph4.graph')   # pfad genau und exakt angeben!
 
 def print_vertex_list(v_list):
     print('Clique found!: ', end='')
