@@ -24,6 +24,8 @@ def parse(filename):
     # c is a counter to know in which block of the graph-file we are
     c = 0
 
+    # dict für das Zugreifen auf die Vertices über ihre Namen
+    vertex_dict = {}
     with open(filename, 'r') as file:
         file_content = file.readlines()
         for i in range(0, len(file_content)):
@@ -54,12 +56,13 @@ def parse(filename):
                 v = Vertex(temp[0])
                 if nodes_label:
                      v.set_node_label(temp[1])
-                vertex_list.append(Vertex(temp[0]))
+                vertex_list.append(v)
+                vertex_dict.update({v.name: v})  # Vertex wird für Edges-Initialiserung gespeichert (Name=Key)
             elif c == 2:
-                e = Edge(temp[0], temp[1])  # unnoetig, weil Edge-Objekt 3 Zeilen weiter unten erstellt wird
-                if edges_label:             # funktioniert so auch noch nicht
+                e = Edge(vertex_dict.get(temp[0]), vertex_dict.get(temp[1]))
+                if edges_label:
                     e.set_label(temp[2])
-                edge_list.append(Edge(vertex_list[(int(temp[0])-1)], vertex_list[(int(temp[1])-1)]))    # so funktioniert das nur solange die reihenfolge zufällig stimmt und solange die kanten Nummern als Namen haben
+                edge_list.append(e)
 
     graph = Graph(vertex_list, edge_list)
     return graph

@@ -4,7 +4,7 @@ import timeit
 
 from Parser import parse
 
-graph = parse('Graphen/graph4.graph')   # pfad genau und exakt angeben!
+graph = parse('Graphen/gewitter4.graph')   # pfad genau und exakt angeben!
 
 def print_vertex_list(v_list):
     print('Clique found!: ', end='')
@@ -16,20 +16,11 @@ def print_vertex_list(v_list):
 # function determines the neighbors of a given vertex
 def neighbors(vertex):
     neighbor_list = []
-
-    # v_name = str(vertex.name)   # uebergangsweise
-
     for edge in graph.edges:
-        # a_edge = str(edge.vertex_a) # uebergangsweise
-        # b_edge = str(edge.vertex_b) # uebergangsweise
         if edge.vertex_a is vertex:
             neighbor_list.append(edge.vertex_b)
         elif edge.vertex_b is vertex:
             neighbor_list.append(edge.vertex_a)
-        # if a_edge == v_name:
-        #     neighbor_list.append(edge.vertex_b)
-        # elif b_edge == v_name:
-        #     neighbor_list.append(edge.vertex_a)
     return neighbor_list
 
 
