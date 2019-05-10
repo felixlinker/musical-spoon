@@ -16,5 +16,8 @@ class Edge:
     def set_label(self, label):
         self.label = label
 
+    def getlabel(self):
+        return self.label
+
     def __str__(self):
         return '(vertex_a: %s, vertex_b: %s, label: %s, weight: %s)' % (self.vertex_a, self.vertex_b, self.label, self.weight)
