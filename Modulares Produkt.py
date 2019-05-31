@@ -1,8 +1,8 @@
-from Parser import parse
+from parser import parse
 import itertools
 from ModularVertex import ModularVertex
-from Edge import Edge
-from Graph import Graph
+from edge import Edge
+from graph import Graph
 
 graph = parse('Graphen/WikipediaGraph.graph')
 graph1 = parse('Graphen/WikipediaGraph.graph')
