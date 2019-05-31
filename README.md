@@ -7,6 +7,9 @@ Commit-Message haben möchte, braucht man folgenden Befehl pro file:
 **To Do:**
 - [x] Git einrichten
 - [x] Parser fixen
-- [ ] Zufallsgenerator für Graphen erstellen	
-- [ ] Modulares Produkt integrieren
-- [ ] Termin mit Hoehner ausmachen
+- [x] Zufallsgenerator für Graphen erstellen	
+- [x] Modulares Produkt integrieren
+- [x] Termin mit Hoehner ausmachen
+- [ ] Hoehner 10 Testgraphen mit unseren Lösungen schicken?
+- [ ] Alternativen Algorithmus zu BronK implementieren -> Cordella Paper
+- [ ] Guidetree implementieren
