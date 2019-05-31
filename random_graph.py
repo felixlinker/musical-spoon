@@ -10,9 +10,9 @@ Created on Sat May 11 15:17:23 2019
 #      -Implementierung gerichteter Graphen
 
 import numpy as np
-from Vertex import Vertex
-from Edge import Edge
-from Graph import Graph
+from vertex import Vertex
+from edge import Edge
+from graph import Graph
 
 
 def random_graph(lower_node_limit, upper_node_limit, nodes_labeled, edges_labeled):
