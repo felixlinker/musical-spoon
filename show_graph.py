@@ -1,32 +1,17 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu May 16 17:07:57 2019
-
-@author: Arctandra
-"""
-
-import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
 
+
 def show_graph(g):
+
+    # generates edgelist which is readable by networkx
+    edge_tuple_list = []
+    for edge in g.get_edges():
+        edge_tuple = (edge.vertex_a.name, edge.vertex_b.name)
+        edge_tuple_list.append(edge_tuple)
     
-    edge_list = []
-    alphabet = "abcdefghijklmnopqrstuvwxyz"
-    
-    for e in g.edges:
-        if str(e.vertex_a.name).isalpha():
-            n1_pos = alphabet.find(str(e.vertex_a.name))
-            n2_pos = alphabet.find(str(e.vertex_b.name))
-            edge_list.append((n1_pos, n2_pos))
-        
-        else:
-            n1_pos = int(e.vertex_a.name)
-            n2_pos = int(e.vertex_b.name)
-            edge_list.append((n1_pos, n2_pos))
-    
-    G = nx.Graph()
-    G.add_edges_from(edge_list)
-    nx.draw(G,with_labels=True)
+    graph = nx.Graph()
+    graph.add_edges_from(edge_tuple_list)
+    nx.draw(graph, with_labels=True)
     plt.show()
 
