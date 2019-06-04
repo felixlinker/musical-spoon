@@ -73,7 +73,6 @@ def random_chess_graph(lower_node_limit, upper_node_limit, deletion_chance):
         for j in range(0, side_length):
             node_identity = str(i) + '_' + str(j)
             new_node = Vertex(node_identity)
-            print(node_identity)
             vertex_list.append(new_node)
     
     #Now for the edges. In this type of graph, only edges between direct neighbors on the "chessboard"
@@ -146,14 +145,12 @@ def random_triangular_graph(lower_node_limit, upper_node_limit, deletion_chance)
                 if not (str(vertex_list[v_index].name + '_' + vertex.name)) in edge_names and v_index > -1:
                     edge_list.append(Edge(vertex, vertex_list[v_index]))
                     edge_names.append(str(vertex.name + '_' + vertex_list[v_index].name))
-                    print(vertex.name + '_' + vertex_list[v_index].name)
                 
             if coordinates[2]+1 < side_length and (100-deletion_chance*100) > np.random.randint(0, 101):
                 v_index = locate_vertex(vertex_list, str(coordinates[0]-1)+'_'+str(coordinates[1]+0)+'_'+str(coordinates[2]+1))
                 if not (str(vertex_list[v_index].name + '_' + vertex.name)) in edge_names and v_index > -1:
                     edge_list.append(Edge(vertex, vertex_list[v_index]))
                     edge_names.append(str(vertex.name + '_' + vertex_list[v_index].name))
-                    print(vertex.name + '_' + vertex_list[v_index].name)
             
         if coordinates[1]-1 >= 0:
             if coordinates[0]+1 < side_length and (100-deletion_chance*100) > np.random.randint(0, 101):
@@ -161,14 +158,12 @@ def random_triangular_graph(lower_node_limit, upper_node_limit, deletion_chance)
                 if not (str(vertex_list[v_index].name + '_' + vertex.name)) in edge_names and v_index > -1:
                     edge_list.append(Edge(vertex, vertex_list[v_index]))
                     edge_names.append(str(vertex.name + '_' + vertex_list[v_index].name))
-                    print(vertex.name + '_' + vertex_list[v_index].name)
                     
             if coordinates[2]+1 < side_length and (100-deletion_chance*100) > np.random.randint(0, 101):
                 v_index = locate_vertex(vertex_list, str(coordinates[0]+0)+'_'+str(coordinates[1]-1)+'_'+str(coordinates[2]+1))
                 if not (str(vertex_list[v_index].name + '_' + vertex.name)) in edge_names and v_index > -1:
                     edge_list.append(Edge(vertex, vertex_list[v_index]))
                     edge_names.append(str(vertex.name + '_' + vertex_list[v_index].name))
-                    print(vertex.name + '_' + vertex_list[v_index].name)
                     
         if coordinates[2]-1 >= 0:
             if coordinates[0]+1 < side_length and (100-deletion_chance*100) > np.random.randint(0, 101):
@@ -176,14 +171,12 @@ def random_triangular_graph(lower_node_limit, upper_node_limit, deletion_chance)
                 if not (str(vertex_list[v_index].name + '_' + vertex.name)) in edge_names and v_index > -1:
                     edge_list.append(Edge(vertex, vertex_list[v_index]))
                     edge_names.append(str(vertex.name + '_' + vertex_list[v_index].name))
-                    print(vertex.name + '_' + vertex_list[v_index].name)
                     
             if coordinates[1]+1 < side_length and (100-deletion_chance*100) > np.random.randint(0, 101):
                 v_index = locate_vertex(vertex_list, str(coordinates[0]+0)+'_'+str(coordinates[1]+1)+'_'+str(coordinates[2]-1))
                 if not (str(vertex_list[v_index].name + '_' + vertex.name)) in edge_names and v_index > -1:
                     edge_list.append(Edge(vertex, vertex_list[v_index]))
                     edge_names.append(str(vertex.name + '_' + vertex_list[v_index].name))
-                    print(vertex.name + '_' + vertex_list[v_index].name)
     
     
     return Graph(vertex_list, edge_list)
