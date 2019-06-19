@@ -64,7 +64,7 @@ def parse(filename):
                     e.set_label(temp[2])
                 edge_list.append(e)
 
-    graph = Graph(vertex_list, edge_list)
+    graph = Graph(vertex_list, edge_list, n_of_nodes, n_of_edges, nodes_label, edges_label, directed_graph)
     return graph
 
 
