@@ -273,3 +273,44 @@ def write_random_graph(lower_node_limit, upper_node_limit, nodes_labeled, edges_
     targetfile.write(block3)    
     targetfile.close()
 
+def reverse_parser(g):
+    #TODO work in progress
+    '''
+    :param g: Graph Object
+    :return: .graph text file
+    '''
+    number_of_vertices = len(g.vertices)
+    number_of_edges = len(g.edges)
+    labelled_vertices = False
+    labelled_edges = False
+
+    # TODO wie findet man raus ob der graph gerichtet ist?
+    directed_graph = False
+
+    Block2 = []
+    Block3 = []
+
+
+    for vertex in g.vertices:
+        if vertex.label != None:
+            labelled_vertices = True
+        Block2.append(vertex.name+';')
+
+    for edge in g.edges:
+        if edge.label != None:
+            labelled_edges = True
+        Block3.append(edge.vertex_a.name+';'+edge.vertex_b.name+';'+edge.label)
+
+
+    print('#nodes;',number_of_vertices,'\n',\
+          '#edges;',number_of_edges,'\n',\
+          'Nodes labelled;',labelled_vertices,'\n',\
+          'Edges labelled;', labelled_edges,'\n',\
+          'Directed graph;',directed_graph,'\n', sep='')
+
+    for word in Block2:
+        print(word)
+    print()
+    for word in Block3:
+        print(word)
+
