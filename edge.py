@@ -7,6 +7,10 @@ class Edge:
     def __init__(self, vertex_a=Vertex, vertex_b=Vertex, label=None, weight=None):
         self.vertex_a = vertex_a
         self.vertex_b = vertex_b
+
+        self.vertex_a.successor.append[vertex_b]
+        self.vertex_b.predecessor.append[vertex_a]
+
         self.label = label
         self.weight = weight
 
