@@ -277,7 +277,8 @@ def reverse_parser(g):
     #TODO work in progress
     '''
     :param g: Graph Object
-    :return: .graph text file
+    :return: .graph text
+    USAGE run in terminal: python3 main.py >> newgraph.graph
     '''
     number_of_vertices = len(g.vertices)
     number_of_edges = len(g.edges)
@@ -288,13 +289,24 @@ def reverse_parser(g):
     Block2 = []
     Block3 = []
 
+    # if-function is necessary because graph-Objects which were randomly created don't have labels
+    if labelled_vertices != None:
+        for vertex in g.vertices:
+            Block2.append(vertex.name+';')
 
-    for vertex in g.vertices:
-        Block2.append(vertex.name+';')
+        for edge in g.edges:
+            Block3.append(edge.vertex_a.name+';'+edge.vertex_b.name+';'+edge.label)
 
-    for edge in g.edges:
-        Block3.append(edge.vertex_a.name+';'+edge.vertex_b.name+';'+edge.label)
+    else:
+        for vertex in g.vertices:
+            if vertex.label != None:
+                labelled_vertices = True
+            Block2.append(vertex.name + ';')
 
+        for edge in g.edges:
+            if edge.label != None:
+                labelled_edges = True
+            Block3.append(edge.vertex_a.name + ';' + edge.vertex_b.name + ';')
 
     print('#nodes;',number_of_vertices,'\n',\
           '#edges;',number_of_edges,'\n',\
