@@ -281,24 +281,18 @@ def reverse_parser(g):
     '''
     number_of_vertices = len(g.vertices)
     number_of_edges = len(g.edges)
-    labelled_vertices = False
-    labelled_edges = False
-
-    # TODO wie findet man raus ob der graph gerichtet ist?
-    directed_graph = False
+    labelled_vertices = g.vertices_labelled
+    labelled_edges = g.edges_labelled
+    directed_graph = g.directed_graph
 
     Block2 = []
     Block3 = []
 
 
     for vertex in g.vertices:
-        if vertex.label != None:
-            labelled_vertices = True
         Block2.append(vertex.name+';')
 
     for edge in g.edges:
-        if edge.label != None:
-            labelled_edges = True
         Block3.append(edge.vertex_a.name+';'+edge.vertex_b.name+';'+edge.label)
 
 
