@@ -1,5 +1,5 @@
 from modular_product import modular_product
-from parser import parse
+from parser import *
 from show_graph import show_graph
 from random_graph import *
 
