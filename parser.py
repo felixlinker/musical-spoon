@@ -68,5 +68,59 @@ def parse(filename):
     return graph
 
 
+def reverse_parser(g):
+    '''
+    :param g: Graph Object
+    :return: .graph text
+    USAGE run in terminal: python3 main.py >> newgraph.graph
+    '''
+    number_of_vertices = len(g.vertices)
+    number_of_edges = len(g.edges)
+    labelled_vertices = g.vertices_labelled
+    labelled_edges = g.edges_labelled
+    directed_graph = g.directed_graph
+
+    Block2 = []
+    Block3 = []
+
+    # if-function is necessary because graph-Objects which were randomly created don't have labels
+    if labelled_vertices != None:
+
+        for vertex in g.vertices:
+            if vertex.label != None:
+                Block2.append(str(vertex.name)+';'+str(vertex.label)+';')
+            else:
+                Block2.append(str(vertex.name)+';')
+
+        for edge in g.edges:
+            if edge.label != None:
+                Block3.append(str(edge.vertex_a.name)+';'+str(edge.vertex_b.name)+';'+str(edge.label))
+            else:
+                Block3.append(str(edge.vertex_a.name)+';'+str(edge.vertex_b.name))
+
+    else:
+
+        labelled_vertices = False
+        labelled_edges = False
+        directed_graph = False
+
+        for vertex in g.vertices:
+            Block2.append(str(vertex.name) + ';')
+
+        for edge in g.edges:
+            Block3.append(str(edge.vertex_a.name) + ';' + str(edge.vertex_b.name))
+
+    print('#nodes;',number_of_vertices,'\n',\
+          '#edges;',number_of_edges,'\n',\
+          'Nodes labelled;',labelled_vertices,'\n',\
+          'Edges labelled;', labelled_edges,'\n',\
+          'Directed graph;',directed_graph,'\n', sep='')
+
+    for word in Block2:
+        print(word)
+    print()
+    for word in Block3:
+        print(word)
+
 
 
