@@ -2,11 +2,13 @@ from modular_product import modular_product
 from parser import *
 from show_graph import show_graph
 from random_graph import *
+from bronk_pivot import *
 
 
 def main():
 
-    g = random_chess_graph(10,20,0.05)
+    find_cliques('Graphen/test.graph')
+    g = parse('Graphen/test.graph')
     reverse_parser(g)
 
 
