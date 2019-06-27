@@ -76,9 +76,9 @@ def bronk(r, p, x):
 # print('time: ', stop - start)
 
 
-def find_cliques(filename):
+def find_cliques(graphobject):
     global graph
-    graph = parse(filename)
+    graph = graphobject
     bronk([], graph.vertices, [])
 
 
