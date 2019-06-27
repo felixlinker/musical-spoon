@@ -7,9 +7,10 @@ from bronk_pivot import *
 
 def main():
 
-    find_cliques('Graphen/test.graph')
-    g = parse('Graphen/test.graph')
+    g = random_chess_graph(10, 10, 0.1)
     reverse_parser(g)
+    show_graph(g)
+    find_cliques(g)
 
 
 
