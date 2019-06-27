@@ -1,10 +1,7 @@
 import random
 import timeit
-
-
 from parser import parse
 
-graph = parse('Graphen/gewitter4.graph')   # pfad genau und exakt angeben!
 
 
 def print_vertex_list(v_list):
@@ -58,8 +55,8 @@ def find_pivot_randomly(p, x):
 
 # the Bron-Kerbosch recursive algorithm
 def bronk(r, p, x):
-    p_with_pivot = find_pivot(p, x)
-    # p_with_pivot = find_pivot_randomly(p, x)
+    # p_with_pivot = find_pivot(p, x)
+    p_with_pivot = find_pivot_randomly(p, x)
     if len(p) == 0 and len(x) == 0:
         print_vertex_list(r)
         return
@@ -72,11 +69,17 @@ def bronk(r, p, x):
         p.remove(vertex)
         x.append(vertex)
 
+#
+# start = timeit.default_timer()
+# bronk([], graph.vertices, [])  # without pivot: 0.0001477
+# stop = timeit.default_timer()
+# print('time: ', stop - start)
 
-start = timeit.default_timer()
-bronk([], graph.vertices, [])  # without pivot: 0.0001477
-stop = timeit.default_timer()
-print('time: ', stop - start)
+
+def find_cliques(filename):
+    global graph
+    graph = parse(filename)
+    bronk([], graph.vertices, [])
 
 
 
