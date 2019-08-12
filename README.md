@@ -5,12 +5,13 @@ Commit-Message haben möchte, braucht man folgenden Befehl pro file:
 	* git commit -m 'my notes' path/to/my/file.ext 
 
 **To Do:**
-- [ ] Zufallsgraphen
+- [X] Zufallsgraphen
 
-        [] reguläre Graphen(Knoten im Schachbrettmuster) ermöglichen
-        [] mit Wkt Kanten wieder zu löschen
+        [X] reguläre Graphen(Knoten im Schachbrettmuster) ermöglichen
+        [X] mit Wkt Kanten wieder zu löschen
 - [ ] Hoehner 10 Testgraphen mit unseren Lösungen schicken
-- [ ] Cordella Paper Methode implementieren
+- [ ] Cordella Paper (in Christophers branch)
         
+        [] Feasibility-function implementieren
         [] testen mit versch. Graphtypen (reguläre und andere Graphen)
 #bis 14.06.: Cordella Paper lesen
