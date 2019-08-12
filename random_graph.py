@@ -90,7 +90,7 @@ def random_chess_graph(lower_node_limit, upper_node_limit, deletion_chance):
                 edge_list.append(Edge(vertex_list[i+j+i*(side_length-1)], vertex_list[i+1+j + (i+1)*(side_length-1)]))
                 #print(str(vertex_list[i+j+i*(side_length-1)].name) + ',' + str(vertex_list[i+1+j + (i+1)*(side_length-1)].name))
                 #Note: Given how the vertex_list is filled, the distance to the vertex n(i,j+1) is always constant
-    
+
 
     return Graph(vertex_list, edge_list)
            

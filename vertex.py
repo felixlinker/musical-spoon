@@ -6,6 +6,9 @@ class Vertex:
         self.name = name
         self.label = label
 
+        self.successors = []
+        self.predecessors = []
+
     def set_node_label(self, label):
         self.label = label
 
