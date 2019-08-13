@@ -1,6 +1,6 @@
 import random
 import timeit
-from parser import parse
+from parser2 import parse
 
 
 
