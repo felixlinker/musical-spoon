@@ -4,18 +4,16 @@ Created on Tue Jun 18 16:52:41 2019
 
 @author: Arctandra
 """
-
-import numpy as np
 from vertex import Vertex
 from edge import Edge
 from graph import Graph
-import matplotlib.pyplot as plt
+
 
 
 # The first two functions just attempt to compile all followup or preceding nodes of a given vertex into one list.
 # This uses the suggested changes to the edge and vertex classes (i.e. keeping a list of following and preceding nodes
 # for every given node).
-def find_successors(v):
+ def find_successors(v):
     out = []
 
     if len(v.successors) != 0:
@@ -32,8 +30,7 @@ def find_successors(v):
     else:
         return v.name
 
-
-def find_predecessors(v):
+ def find_predecessors(v):
     in_ = []
 
     if len(v.predecessors) != 0:
@@ -48,8 +45,39 @@ def find_predecessors(v):
     else:
         return v.name
 
+ def F(s, n, m):
+    n_neighbours = find_successors(n) + find_predecessors(n)  # There could be problems with directed graph
+    m_neighbours = find_successors(m) + find_predecessors(m)  # There could be problems with directed graph
+    n_neighbours_mapped = []
+    m_neighbours_mapped = []
+    count_m = False
+    count_n = False
+    for n in n_neighbours:                                    # Join all Neighbours which are in the current matching
+        if s[0][n] is not None:
+            n_neighbours_mapped.append(n)
+    for m in m_neighbours:
+        if s[1][m] is not None:
+            m_neighbours_mapped.append(m)
+    for i in n_neighbours_mapped:                       # checks if n to i has a corresponding branch m to match_form_i
+        if s[0][i] in m_neighbours_mapped:
+            count_n = True
+        else:
+            count_n = False
+            break
+    for i in m_neighbours_mapped:
+        if s[1][i] in n_neighbours_mapped:
+            count_m = True
+        else:
+            count_m = False
+            break
+    if count_n and count_m:
+        return True
+    else:
+        return False
 
-def P(s, g1, g2):
+#S[2]=Tout1 , S[3]=Tout2 same mit S[3]/[4] nur dies mal in. S[0]=core_1 und S[1]=core_2
+
+ def P(s, g1, g2):
     # Empty lists are considered False in python.
     if s[2] != False and s[3] != False:
         return [s[2], min(s[3])]
@@ -72,7 +100,7 @@ def P(s, g1, g2):
     return [N1, min(N2)]
 
 
-def match(s, g1, g2):
+ def match(s, g1, g2):
     # First we have to fill the predecessor and successor vectors.
 
     if None not in s[0] or None not in s[1]:
@@ -93,7 +121,7 @@ def match(s, g1, g2):
 
             # TODO: F still needs to be implemented. One could probably take a note from the find_predecessor and find_successor
             # functions for this tho.
-            if F(s, n, p[1], g1, g2):
+            if F(s, n, p[1]):
                 # The following just adds the indices of the newly matched nodes in the right positions in the core_1, core_2
                 # vectors...
                 s[0][n] = p[1]
@@ -112,9 +140,9 @@ def match(s, g1, g2):
                 return match(s, g1, g2)
 
 
-def initialize_match(s, g1, g2):
+ def initialize_match(s, g1, g2):
     # Basically, to save computation time later on, we have the program identify the first pair of matching nodes and then
-    # immediatly calculate all predecessors and successors of these two nodes. These lists will then be updated with each
+    # immediately calculate all predecessors and successors of these two nodes. These lists will then be updated with each
     # future addition to the core_1 and core_2 vectors by removing the new matching nodes from the in_1, in_2, ou_1, out_2 vectors.
 
     for n in g1.vertices:
@@ -131,7 +159,7 @@ def initialize_match(s, g1, g2):
     return match(s, g1, g2)
 
 
-def Cordella(g1, g2):
+ def Cordella(g1, g2):
     for i in range(0, len(g1.vertices)):
         g1.vertices[i].name = int(i)
 
@@ -142,13 +170,13 @@ def Cordella(g1, g2):
     core_1 = [None] * len(g1.vertices)
     core_2 = [None] * len(g2.vertices)
     # Initialize in_1, out_1 and in_2, out_2 as empty - since there are no nodes matched right now, it is impossible
-    # to define predecessor or sucessor nodes at initialization.
+    # to define predecessor or successor nodes at initialization.
     in_1 = []
     in_2 = []
     out_1 = []
     out_2 = []
 
-    # We shall save these 6 vectors as a list to simplify the assignemnt of values. It would be paramount to
+    # We shall save these 6 vectors as a list to simplify the assignment of values. It would be paramount to
     # never change their order, please.
     s = [core_1, core_2, out_1, out_2, in_1, in_2]
 
