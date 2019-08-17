@@ -4,6 +4,7 @@ Uses a graph-file as input and creates a Graph-Object out of Vertex and Edge Obj
 from vertex import Vertex
 from edge import Edge
 from graph import Graph
+from mendeleev import element
 
 
 def parse(filename):
@@ -202,7 +203,8 @@ def parse_chem(filename):
         # creating graph-object after finishing reading the file
         for i in range(0,len(vertices_all)):
             v = Vertex(vertices_all[i])
-            v.set_node_label(vertex_labels_all[i])
+            e = element(vertex_labels_all[i])
+            v.set_node_label(e.name)
             vertex_list.append(v)
             vertex_dict.update({v.name: v})
 
