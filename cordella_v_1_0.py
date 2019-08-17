@@ -58,7 +58,18 @@ def find_predecessors(v):
     else:
         list2 = [v.name]
         return list2
+    
+#The next function is mainly used for the alignment of chemical graphs - it ensures that only nodes representing the same type of 
+#nuclei are mapped onto each other. Can be ignored for other graphs, since their node labels are "None".
+def atomic_identity(x,y, g1, g2):
+    if g1.vertices[x].label == g2.vertices[y].label:
+        return True
+    else:
+        return False
 
+
+#The following is the Feasibility function of the Cordella algorithm, required to check, if a proposed matching results in branches,
+#that are not mutually exclusive.
 def F(s, n, m, g1, g2):
     n_successors = []
     n_predecessors = []
@@ -139,7 +150,7 @@ def F(s, n, m, g1, g2):
     else:
         return False
 
-
+#A function that generates potential matching candidates from the remaining unmapped parts of the graph.
 def P(s, g1, g2):
     # Empty lists are considered False in python.
     if len(s[2]) != 0 and len(s[3]) != 0:
@@ -162,7 +173,7 @@ def P(s, g1, g2):
 
     return [N1, min(N2)]
 
-
+#The core function of the Cordella algorithm - loops until one graph is successfully mapped onto the other.
 def match(s, g1, g2):
     # First we have to fill the predecessor and successor vectors.
     
@@ -183,9 +194,8 @@ def match(s, g1, g2):
         # be one value anyways). Careful, these have to be indices.
         for n in p[0]:
 
-            # TODO: F still needs to be implemented. One could probably take a note from the find_predecessor and find_successor
-            # functions for this tho.
-            if F(s, n, p[1], g1, g2):
+            if F(s, n, p[1], g1, g2) and atomic_identity(n, p[1], g1, g2):
+
                 # The following just adds the indices of the newly matched nodes in the right positions in the core_1, core_2
                 # vectors...
                 s[0][n] = p[1]
@@ -273,5 +283,10 @@ def Cordella(g1, g2):
     print("Initialize complete.")
     # Call the Matching function
     cord =  initialize_match(s, g1, g2)
-    create_output_table(cord[0], cord[1], hold_g1, hold_g2)
+    
+    #Make use of the output:
+    if cord == None:
+        print("Invalid pairs - no isomorphism could be found.")
+    else:
+        create_output_table(cord[0], cord[1], hold_g1, hold_g2)
 
