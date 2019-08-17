@@ -203,8 +203,8 @@ def parse_chem(filename):
         # creating graph-object after finishing reading the file
         for i in range(0,len(vertices_all)):
             v = Vertex(vertices_all[i])
-            e = element(vertex_labels_all[i])
-            v.set_node_label(e.name)
+            e = element(int(vertex_labels_all[i]))
+            v.set_node_label(e.symbol)
             vertex_list.append(v)
             vertex_dict.update({v.name: v})
 
