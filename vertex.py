@@ -17,11 +17,14 @@ class Vertex:
 
     
 class ModularVertex:
-    def __init__(self, name, vertex1, vertex2, label=None):
+    def __init__(self, name, vertex1, vertex2, label=None, successors = None, predecessors = None):
         self.name = name
         self.vertex1 = vertex1
         self.vertex2 = vertex2
         self.label = label
+
+        self.successors = []
+        self.predecessors = []
 
     def get_vertex1(self):
         return self.vertex1
