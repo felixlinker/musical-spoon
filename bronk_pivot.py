@@ -51,17 +51,24 @@ def modular_product(graph, graph1):
 longest_vlist = 0   # TODO globale Variable, um nur größte Clique zurückzugeben
 
 
-def print_vertex_list(v_list):
+def determine_mcis(v_list):
     global longest_vlist
+    global mcis
     if len(v_list) > longest_vlist:    # TODO wie geht man mit mehreren gleich langen Listen um
         longest_vlist = len(v_list)
+        mcis = v_list
 
+
+def print_vertex_list(v_list):
     print('Clique found!: ', end='')
     for v in range(0, (len(v_list))):
         print(v_list[v], end='')
     print('\n')
 
+
 def build_graph_outof_vlist(vlist):
+    print('Building a graph out of longest Vertexlist...')
+    print_vertex_list(vlist)
     new_graph = Graph()
     for v in vlist:
         new_graph.add_vertex(v)
@@ -73,27 +80,35 @@ def build_graph_outof_vlist(vlist):
             if s in new_graph.vertices and Edge(v, s) not in new_graph:     # 2nd condition prevents doubled edges TODO: wirklich nötig? was ist bei gerichteten Graphen?
                 new_graph.add_edges(Edge(s, v))
     #TODO no_of_vertices, no_of_edges, etc nötig?
+    print('Returning a graph built out of longest Vertexlist...')
     return new_graph
 
 
 # function determines the neighbors of a given vertex
 def neighbors(vertex):
     neighbor_list = []
-    for i in range(0, len(vertex.predecessors)):
-        if vertex.predecessors[i] not in neighbor_list or vertex.predecessors[i] != vertex:
-            neighbor_list.append(vertex.predecessors[i])
-    for i in range(0, len(vertex.successors)):
-        if vertex.successors[i] not in neighbor_list or vertex.successors[i] != vertex:
-            neighbor_list.append(vertex.successors[i])
-    # for v in range(0, len(neighbor_list)):
-    #     print(neighbor_list[v], ' hat fogende Successors:')
-    #     for x in range(0, len(neighbor_list[v].successors)):
-    #         print(neighbor_list[v].successors[x])
-    #     print('und folgende Predecessors:')
-    #     for x in range(0, len(neighbor_list[v].predecessors)):
-    #         print(neighbor_list[v].predecessors[x])
-    # print('Returning neighbour_list')
+    for edge in graph.edges:
+        if edge.vertex_a is vertex:
+            neighbor_list.append(edge.vertex_b)
+        elif edge.vertex_b is vertex:
+            neighbor_list.append(edge.vertex_a)
     return neighbor_list
+    # neighbor_list = []
+    # for i in range(0, len(vertex.predecessors)):
+    #     if vertex.predecessors[i] not in neighbor_list or vertex.predecessors[i] != vertex:
+    #         neighbor_list.append(vertex.predecessors[i])
+    # for i in range(0, len(vertex.successors)):
+    #     if vertex.successors[i] not in neighbor_list or vertex.successors[i] != vertex:
+    #         neighbor_list.append(vertex.successors[i])
+    # # for v in range(0, len(neighbor_list)):
+    # #     print(neighbor_list[v], ' hat fogende Successors:')
+    # #     for x in range(0, len(neighbor_list[v].successors)):
+    # #         print(neighbor_list[v].successors[x])
+    # #     print('und folgende Predecessors:')
+    # #     for x in range(0, len(neighbor_list[v].predecessors)):
+    # #         print(neighbor_list[v].predecessors[x])
+    # # print('Returning neighbour_list')
+    # return neighbor_list
 
 
 def count_and_sort(p, x):  # counts number of neighbors for each vertex and sorts
@@ -132,7 +147,8 @@ def bronk(r, p, x):
     # p_with_pivot = find_pivot(p, x)
     p_with_pivot = find_pivot_randomly(p, x)
     if len(p) == 0 and len(x) == 0:
-        print_vertex_list(r)
+        #print_vertex_list(r)
+        determine_mcis(r)
         return
     for vertex in p_with_pivot[:]:
         r_new = r[:]
@@ -155,6 +171,11 @@ def find_cliques(graphobject):
     graph = graphobject
     bronk([], graph.vertices, [])
 
+
 def find_mcis(graph1, graph2):
     mod_graph = modular_product(graph1, graph2)
+    print('Finding cliques...')
     find_cliques(mod_graph)
+    # nach dem Durchlauf von find_clique() enthält die globale Variable mcis eine Vertexlist eine
+    # maximum common induce subgraphs
+    build_graph_outof_vlist(mcis)
