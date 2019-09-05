@@ -1,14 +1,37 @@
 import random
 import timeit
 from parser2 import parse
+from graph import *
+from edge import  *
+from vertex import *
 
+longest_vlist = 0
 
+# TODO Abbruchbedingung bei zirkulären Graphen
 
 def print_vertex_list(v_list):
+    global longest_vlist
+    if len(v_list) > longest_vlist:    # TODO wie geht man mit mehreren gleich langen Listen um
+        longest_vlist = len(v_list)
+
     print('Clique found!: ', end='')
     for v in range(0, (len(v_list))):
         print(v_list[v], end='')
     print('\n')
+
+def build_graph_outof_vlist(vlist):
+    new_graph = Graph()
+    for v in vlist:
+        new_graph.add_vertex(v)
+    for v in vlist:
+        for s in v.successors:
+            if s in new_graph.vertices:
+                new_graph.add_edges(Edge(v, s))
+        for s in v.predecessors:
+            if s in new_graph.vertices and Edge(v, s) not in new_graph:     # 2nd condition prevents doubled edges TODO: wirklich nötig? was ist bei gerichteten Graphen?
+                new_graph.add_edges(Edge(s, v))
+    #TODO no_of_vertices, no_of_edges, etc nötig?
+    return new_graph
 
 
 # function determines the neighbors of a given vertex
@@ -19,6 +42,24 @@ def neighbors(vertex):
             neighbor_list.append(edge.vertex_b)
         elif edge.vertex_b is vertex:
             neighbor_list.append(edge.vertex_a)
+    return neighbor_list
+
+def find_pred_or_succ(vertex):
+    neighbor_list = []
+    for i in range(0, len(vertex.predecessors)):
+        if vertex.predecessors[i] not in neighbor_list or vertex.predecessors[i] != vertex:
+            neighbor_list.append(vertex.predecessors[i])
+    for i in range(0, len(vertex.successors)):
+        if vertex.successors[i] not in neighbor_list or vertex.successors[i] != vertex:
+            neighbor_list.append(vertex.successors[i])
+    # for v in range(0, len(neighbor_list)):
+    #     print(neighbor_list[v], ' hat fogende Successors:')
+    #     for x in range(0, len(neighbor_list[v].successors)):
+    #         print(neighbor_list[v].successors[x])
+    #     print('und folgende Predecessors:')
+    #     for x in range(0, len(neighbor_list[v].predecessors)):
+    #         print(neighbor_list[v].predecessors[x])
+    print('Returning neighbour_list')
     return neighbor_list
 
 
