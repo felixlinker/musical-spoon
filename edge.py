@@ -8,8 +8,10 @@ class Edge:
     def __init__(self, vertex_a=Vertex, vertex_b=Vertex, label=None, weight=None):
         self.vertex_a = vertex_a
         self.vertex_b = vertex_b
-        self.vertex_a.successors.append(vertex_b)
-        self.vertex_b.predecessors.append(vertex_a)
+        if vertex_b not in vertex_a.successors:
+            self.vertex_a.successors.append(vertex_b)
+        if vertex_a not in vertex_b.predecessors:
+            self.vertex_b.predecessors.append(vertex_a)
         self.label = label
         self.weight = weight
 
