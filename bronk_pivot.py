@@ -5,6 +5,7 @@ from parser2 import parse
 from graph import *
 from edge import  *
 from vertex import *
+from show_graph import *
 
 # TODO Abbruchbedingung bei zirkulären Graphen
 
@@ -67,19 +68,30 @@ def print_vertex_list(v_list):
     print('\n')
 
 
-def build_graph_outof_vlist(vlist):
+def extract_v1(vlist):
+    v1list = []
+    for v in vlist:
+        v1list.append(v.vertex1)
+    return v1list
+
+
+def extract_v2(vlist, v1):
+    for v in vlist:
+        if v.vertex1 == v1:
+            return v
+    print('ERROR: no v2 found')
+
+def build_graph_outof_vlist(vlist, graph1, mod_graph):
     print('Building a graph out of longest Vertexlist...')
     print_vertex_list(vlist)
     new_graph = Graph()
     for v in vlist:
         new_graph.add_vertex(v)
     for v in vlist:
-        for s in v.successors:
-            if s in new_graph.vertices:
-                new_graph.add_edges(Edge(v, s))
-        for s in v.predecessors:
-            if s in new_graph.vertices and Edge(v, s) not in new_graph.edges:     # 2nd condition prevents doubled edges TODO: wirklich nötig? was ist bei gerichteten Graphen?
-                new_graph.add_edges(Edge(s, v))
+        for s in mod_neighbors(v.vertex1, graph1):
+            if s in extract_v1(vlist):
+                v2 = extract_v2(vlist, s)
+                new_graph.add_edges(Edge(v, v2))
     #TODO no_of_vertices, no_of_edges, etc nötig?
     print('Returning a graph built out of longest Vertexlist...')
     return new_graph
@@ -179,5 +191,6 @@ def find_mcis(graph1, graph2):
     find_cliques(mod_graph)
     # nach dem Durchlauf von find_clique() enthält die globale Variable mcis eine Vertexlist eines
     # maximum common induce subgraphs
-    mcis_graph = build_graph_outof_vlist(mcis)
+    mcis_graph = build_graph_outof_vlist(mcis, graph1, mod_graph)
+    print(longest_vlist)
     return mcis_graph
