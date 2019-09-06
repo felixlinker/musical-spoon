@@ -34,10 +34,10 @@ def modular_product(graph, graph1):
             if k.get_vertex1() == l.get_vertex1() \
                     or k.get_vertex2() == l.get_vertex2(): # um zu verhindern, dass mit sich selbst parrt
                 continue
-            elif k.get_vertex1() in mod_neighbors(l.get_vertex1(), graph) \
-                    and k.get_vertex2() in mod_neighbors(l.get_vertex2(), graph1)\
-                    or k.get_vertex1() not in mod_neighbors(l.get_vertex1(), graph) \
-                    and k.get_vertex2() not in mod_neighbors(l.get_vertex2(), graph1):
+            elif (k.get_vertex1() in mod_neighbors(l.get_vertex1(), graph) \
+                    and k.get_vertex2() in mod_neighbors(l.get_vertex2(), graph1))\
+                    or (k.get_vertex1() not in mod_neighbors(l.get_vertex1(), graph) \
+                    and k.get_vertex2() not in mod_neighbors(l.get_vertex2(), graph1)):
                 q = (k.get_name()+l.get_name())
                 r = (l.get_name()+k.get_name())
                 if q not in controlset and r not in controlset: # Sorgt dafür, dass keine Edge doppelt hinzugefügt wird.
@@ -51,6 +51,7 @@ def modular_product(graph, graph1):
 longest_vlist = 0   # TODO globale Variable, um nur größte Clique zurückzugeben
 
 
+# speichert die von bronk bisher längste gesehene Vertexlist
 def determine_mcis(v_list):
     global longest_vlist
     global mcis
@@ -77,7 +78,7 @@ def build_graph_outof_vlist(vlist):
             if s in new_graph.vertices:
                 new_graph.add_edges(Edge(v, s))
         for s in v.predecessors:
-            if s in new_graph.vertices and Edge(v, s) not in new_graph:     # 2nd condition prevents doubled edges TODO: wirklich nötig? was ist bei gerichteten Graphen?
+            if s in new_graph.vertices and Edge(v, s) not in new_graph.edges:     # 2nd condition prevents doubled edges TODO: wirklich nötig? was ist bei gerichteten Graphen?
                 new_graph.add_edges(Edge(s, v))
     #TODO no_of_vertices, no_of_edges, etc nötig?
     print('Returning a graph built out of longest Vertexlist...')
@@ -176,6 +177,7 @@ def find_mcis(graph1, graph2):
     mod_graph = modular_product(graph1, graph2)
     print('Finding cliques...')
     find_cliques(mod_graph)
-    # nach dem Durchlauf von find_clique() enthält die globale Variable mcis eine Vertexlist eine
+    # nach dem Durchlauf von find_clique() enthält die globale Variable mcis eine Vertexlist eines
     # maximum common induce subgraphs
-    build_graph_outof_vlist(mcis)
+    mcis_graph = build_graph_outof_vlist(mcis)
+    return mcis_graph
