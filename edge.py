@@ -1,5 +1,6 @@
 from vertex import Vertex
 
+
 class Edge:
     '''
     Edges are represented as objects
@@ -8,7 +9,7 @@ class Edge:
     def __init__(self, vertex_a=Vertex, vertex_b=Vertex, label=None, weight=None):
         self.vertex_a = vertex_a
         self.vertex_b = vertex_b
-        if vertex_b not in vertex_a.successors:
+        if vertex_b not in vertex_a.successors:             # if bedingung wird momentan benötigt, bin aber unsicher ob sie dauerhaft drin bleiben darf
             self.vertex_a.successors.append(vertex_b)
         if vertex_a not in vertex_b.predecessors:
             self.vertex_b.predecessors.append(vertex_a)
