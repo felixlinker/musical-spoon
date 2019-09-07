@@ -176,5 +176,5 @@ def find_mcis(graph1, graph2):
     # nach dem Durchlauf von find_clique() enthält die globale Variable mcis eine Vertexlist eines
     # maximum common induce subgraphs
     mcis_graph = build_graph_outof_vlist(mcis, graph1)
-    print(longest_vlist)
+    print('Maximal Clique has ', longest_vlist, ' nodes.')
     return mcis_graph
