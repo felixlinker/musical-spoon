@@ -28,7 +28,7 @@ def modular_product(graph, graph1):
     controlset = set()
 
     for i in itertools.product(graph.vertices, graph1.vertices): # Kartesisches Produkt der beiden Graphen -> wird in neuer Klasse abgespeicher
-        m_vertex_list.append(ModularVertex(i[0].name+i[1].name, i[0], i[1]))
+        m_vertex_list.append(ModularVertex(i[0].name+'-'+i[1].name, i[0], i[1]))
 
     for k in m_vertex_list:  # doppelte For-Schleife, um alle Beziehungen abzudecken
         for l in m_vertex_list:
@@ -49,7 +49,7 @@ def modular_product(graph, graph1):
     return Graph(m_vertex_list, m_edge_list)
 
 
-longest_vlist = 0   # TODO globale Variable, um nur größte Clique zurückzugeben
+longest_vlist = 0   # globale Variable, um nur größte Clique zurückzugeben
 
 
 # speichert die von bronk bisher längste gesehene Vertexlist
@@ -75,13 +75,13 @@ def extract_v1(vlist):
     return v1list
 
 
-def extract_v2(vlist, v1):
+def extract_vPair(vlist, v1):
     for v in vlist:
         if v.vertex1 == v1:
             return v
     print('ERROR: no v2 found')
 
-def build_graph_outof_vlist(vlist, graph1, mod_graph):
+def build_graph_outof_vlist(vlist, graph1):
     print('Building a graph out of longest Vertexlist...')
     print_vertex_list(vlist)
     new_graph = Graph()
@@ -90,8 +90,8 @@ def build_graph_outof_vlist(vlist, graph1, mod_graph):
     for v in vlist:
         for s in mod_neighbors(v.vertex1, graph1):
             if s in extract_v1(vlist):
-                v2 = extract_v2(vlist, s)
-                new_graph.add_edges(Edge(v, v2))
+                v_pair = extract_vPair(vlist, s)
+                new_graph.add_edges(Edge(v, v_pair))
     #TODO no_of_vertices, no_of_edges, etc nötig?
     print('Returning a graph built out of longest Vertexlist...')
     return new_graph
@@ -106,22 +106,6 @@ def neighbors(vertex):
         elif edge.vertex_b is vertex:
             neighbor_list.append(edge.vertex_a)
     return neighbor_list
-    # neighbor_list = []
-    # for i in range(0, len(vertex.predecessors)):
-    #     if vertex.predecessors[i] not in neighbor_list or vertex.predecessors[i] != vertex:
-    #         neighbor_list.append(vertex.predecessors[i])
-    # for i in range(0, len(vertex.successors)):
-    #     if vertex.successors[i] not in neighbor_list or vertex.successors[i] != vertex:
-    #         neighbor_list.append(vertex.successors[i])
-    # # for v in range(0, len(neighbor_list)):
-    # #     print(neighbor_list[v], ' hat fogende Successors:')
-    # #     for x in range(0, len(neighbor_list[v].successors)):
-    # #         print(neighbor_list[v].successors[x])
-    # #     print('und folgende Predecessors:')
-    # #     for x in range(0, len(neighbor_list[v].predecessors)):
-    # #         print(neighbor_list[v].predecessors[x])
-    # # print('Returning neighbour_list')
-    # return neighbor_list
 
 
 def count_and_sort(p, x):  # counts number of neighbors for each vertex and sorts
@@ -191,6 +175,6 @@ def find_mcis(graph1, graph2):
     find_cliques(mod_graph)
     # nach dem Durchlauf von find_clique() enthält die globale Variable mcis eine Vertexlist eines
     # maximum common induce subgraphs
-    mcis_graph = build_graph_outof_vlist(mcis, graph1, mod_graph)
+    mcis_graph = build_graph_outof_vlist(mcis, graph1)
     print(longest_vlist)
     return mcis_graph
