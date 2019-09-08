@@ -22,13 +22,12 @@ def mod_neighbors(vertex, graph):
 
 
 def modular_product(graph, graph1):
-    print('Calculating modular product...')
     m_vertex_list = []
     m_edge_list = []
     controlset = set()
 
     for i in itertools.product(graph.vertices, graph1.vertices): # Kartesisches Produkt der beiden Graphen -> wird in neuer Klasse abgespeicher
-        m_vertex_list.append(ModularVertex(i[0].name+'-'+i[1].name, i[0], i[1]))
+        m_vertex_list.append(ModularVertex(i[0].name+' ; '+i[1].name, i[0], i[1]))
 
     for k in m_vertex_list:  # doppelte For-Schleife, um alle Beziehungen abzudecken
         for l in m_vertex_list:
@@ -45,27 +44,34 @@ def modular_product(graph, graph1):
                     controlset.add(q)
                     controlset.add(r)
                     m_edge_list.append(Edge(k, l))
-    print('Modular product calculated...')
     return Graph(m_vertex_list, m_edge_list)
 
 
 longest_vlist = 0   # globale Variable, um nur größte Clique zurückzugeben
+no_of_mcis = []
 
 
 # speichert die von bronk bisher längste gesehene Vertexlist
 def determine_mcis(v_list):
-    global longest_vlist
-    global mcis
-    if len(v_list) > longest_vlist:    # TODO wie geht man mit mehreren gleich langen Listen um
+    global longest_vlist, mcis, no_of_mcis
+    if len(v_list) > longest_vlist:    # TODO Möglichkeit einbauen mehreren gleich langen Listen auszugeben
         longest_vlist = len(v_list)
         mcis = v_list
+    if len(v_list) == longest_vlist:
+        no_of_mcis.append(longest_vlist)
+
+
+def determine_no_of_mcis():
+    amount = no_of_mcis.count(max(no_of_mcis))
+    print('Found', amount, 'MCIS with', max(no_of_mcis), 'nodes.')
 
 
 def print_vertex_list(v_list):
-    print('Clique found!: ', end='')
-    for v in range(0, (len(v_list))):
-        print(v_list[v], end='')
-    print('\n')
+    if len(v_list) == longest_vlist:
+        print('The following pairs were found (Graph 1 node ; Graph 2 node):')
+        for v in range(0, (len(v_list))):
+            print(v_list[v].name)
+        print('\n')
 
 
 def extract_v1(vlist):
@@ -82,7 +88,6 @@ def extract_vPair(vlist, v1):
     print('ERROR: no v2 found')
 
 def build_graph_outof_vlist(vlist, graph1):
-    print('Building a graph out of longest Vertexlist...')
     print_vertex_list(vlist)
     new_graph = Graph()
     for v in vlist:
@@ -93,7 +98,6 @@ def build_graph_outof_vlist(vlist, graph1):
                 v_pair = extract_vPair(vlist, s)
                 new_graph.add_edges(Edge(v, v_pair))
     #TODO no_of_vertices, no_of_edges, etc nötig?
-    print('Returning a graph built out of longest Vertexlist...')
     return new_graph
 
 
@@ -140,19 +144,21 @@ def find_pivot_randomly(p, x):
 
 
 # the Bron-Kerbosch recursive algorithm
-def bronk(r, p, x):
+def bronk(r, p, x, firstrun):
     # p_with_pivot = find_pivot(p, x)
     p_with_pivot = find_pivot_randomly(p, x)
     if len(p) == 0 and len(x) == 0:
-        #print_vertex_list(r)
-        determine_mcis(r)
+        if firstrun:
+            determine_mcis(r)
+        else:
+            print_vertex_list(r)
         return
     for vertex in p_with_pivot[:]:
         r_new = r[:]
         r_new.append(vertex)
         p_new = [val for val in p if val in neighbors(vertex)]  # p intersects neighbor(vertex)
         x_new = [val for val in x if val in neighbors(vertex)]  # x intersects neighbor(vertex)
-        bronk(r_new, p_new, x_new)
+        bronk(r_new, p_new, x_new, firstrun)
         p.remove(vertex)
         x.append(vertex)
 
@@ -163,18 +169,27 @@ def bronk(r, p, x):
 # print('time: ', stop - start)
 
 
-def find_cliques(graphobject):
+def find_cliques(graphobject, firstrun):
     global graph
     graph = graphobject
-    bronk([], graph.vertices, [])
+    bronk([], graph.vertices, [], firstrun)
 
 
 def find_mcis(graph1, graph2):
     mod_graph = modular_product(graph1, graph2)
-    print('Finding cliques...')
-    find_cliques(mod_graph)
+    print('Finding Maximal Common Induced Subgraphs...')
+    find_cliques(mod_graph, firstrun=True)
     # nach dem Durchlauf von find_clique() enthält die globale Variable mcis eine Vertexlist eines
     # maximum common induce subgraphs
     mcis_graph = build_graph_outof_vlist(mcis, graph1)
-    print('Maximal Clique has ', longest_vlist, ' nodes.')
+    determine_no_of_mcis()
+    if len(no_of_mcis) > 1:
+        more_output = input('Do you want to see all Maximal Common Induced Subgraphs? [y/n] ')
+        if more_output == 'y':
+            mod_graph = modular_product(graph1, graph2)
+            print('Finding all maximal cliques...')
+            find_cliques(mod_graph, firstrun=False)
+            print('Done.')
+        else:
+            print('Bye.')
     return mcis_graph
