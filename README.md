@@ -13,9 +13,12 @@ Commit-Message haben möchte, braucht man folgenden Befehl pro file:
     - progressiv
         
 **Roman**
-- [ ] Ausgabe verfeinern
-    - Modulares Produkt und Bronk zusammenführen
-    - Bronk Graphen ausgeben lassen
+
+[X] Ausgabe verfeinern
+
+[ ] Probleme bei gerichteten/ungerichteten Graphen finden
+
+[ ] Anker Eingabe ermöglichen
                 
 **Nicht zugewiesen**
 - [ ] Hoehner 10 Testgraphen mit unseren Lösungen schicken
