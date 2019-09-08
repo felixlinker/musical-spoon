@@ -14,11 +14,11 @@ Commit-Message haben möchte, braucht man folgenden Befehl pro file:
         
 **Roman**
 
-[X] Ausgabe verfeinern
+- [X] Ausgabe verfeinern
 
-[ ] Probleme bei gerichteten/ungerichteten Graphen finden
+- [ ] Probleme bei gerichteten/ungerichteten Graphen finden
 
-[ ] Anker Eingabe ermöglichen
+- [ ] Anker Eingabe ermöglichen
                 
 **Nicht zugewiesen**
 - [ ] Hoehner 10 Testgraphen mit unseren Lösungen schicken
