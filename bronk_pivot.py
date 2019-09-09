@@ -193,3 +193,13 @@ def find_mcis(graph1, graph2):
         else:
             print('Bye.')
     return mcis_graph
+
+#Dieser hier wird für den Guidetree als Alternative benötigt, da wir zur Konstruktion nie mehr
+    #als den maximum subgraph brauchen.
+def find_mcis_without_prompt(graph1, graph2):
+    mod_graph = modular_product(graph1, graph2)
+    print('Finding Maximal Common Induced Subgraphs...')
+    find_cliques(mod_graph, firstrun=True)
+    mcis_graph = build_graph_outof_vlist(mcis, graph1)
+    print(str(len(mcis_graph.vertices)))
+    return mcis_graph

@@ -17,6 +17,34 @@ def show_graph(g):
     plt.show()
 
 
+def show_two_graphs(g1, g2):
+    #generating edgelists readably by networkx
+    g1edge_tuple_list = []
+    for edge in g1.get_edges():
+        edge_tuple = (edge.vertex_a.name, edge.vertex_b.name)
+        g1edge_tuple_list.append(edge_tuple)
+    g2edge_tuple_list = []
+    for edge in g2.get_edges():
+        edge_tuple = (edge.vertex_a.name, edge.vertex_b.name)
+        g2edge_tuple_list.append(edge_tuple)
+
+    #generating networkx graphs
+    graph1 = nx.Graph()
+    graph1.add_edges_from(g1edge_tuple_list)
+    graph2 = nx.Graph()
+    graph2.add_edges_from(g2edge_tuple_list)
+    plt.clf()
+
+    plt.subplot(121)
+    plt.title('Graph1')
+    nx.draw(graph1, node_color='lightblue', node_size=800, with_labels=True)
+    plt.subplot(122)
+    plt.title('Graph2')
+    nx.draw(graph2, node_color='lightblue', node_size=800, with_labels=True)
+    plt.axis('equal')
+    plt.show()
+
+
 def show_graph_comparable(g1, g2, g3):
     #generating edgelists readably by networkx
     g1edge_tuple_list = []
