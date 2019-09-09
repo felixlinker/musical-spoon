@@ -27,3 +27,16 @@ class Edge:
 
     def __str__(self):
         return '(vertex_a: %s, vertex_b: %s, label: %s, weight: %s)' % (self.vertex_a, self.vertex_b, self.label, self.weight)
+
+        #The following two functions should be called to cleanly remove an edge from an existing graph
+    def cut_successors(self):
+        if self.vertex_b in self.vertex_a.successors:
+            self.vertex_a.successors.remove(self.vertex_b)
+        if self.vertex_a in self.vertex_b.successors:
+            self.vertex_b.successors.remove(self.vertex_a)
+        
+    def cut_predecessors(self):
+        if self.vertex_b in self.vertex_a.predecessors:
+            self.vertex_a.predecessors.remove(self.vertex_b)
+        if self.vertex_a in self.vertex_b.predecessors:
+            self.vertex_b.predecessors.remove(self.vertex_a)
