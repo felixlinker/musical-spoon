@@ -18,10 +18,13 @@ Commit-Message haben möchte, braucht man folgenden Befehl pro file:
 
 - [ ] Probleme bei gerichteten/ungerichteten Graphen finden
 
-- [ ] Anker Eingabe ermöglichen
+**Joshi**
+- [ ] Newick-format aus fertigen Guide-Trees erzeugen
+
                 
 **Nicht zugewiesen**
+- [ ] Regeln für Knoten/Kanten-Matching
 - [ ] Hoehner 10 Testgraphen mit unseren Lösungen schicken
-- [ ] Löschfkt anpassen
+- [X] Löschfkt anpassen
 - [X] Cordella Paper
 - [ ] testen mit versch. Graphtypen (reguläre und andere Graphen)
