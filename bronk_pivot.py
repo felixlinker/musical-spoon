@@ -14,9 +14,9 @@ from show_graph import *
 def mod_neighbors(vertex, graph):
     neighbor_list = []
     for edge in graph.edges:
-        if edge.vertex_a is vertex:
+        if edge.vertex_a.name is vertex.name:
             neighbor_list.append(edge.vertex_b)
-        elif edge.vertex_b is vertex:
+        elif edge.vertex_b.name is vertex.name:
             neighbor_list.append(edge.vertex_a)
     return neighbor_list
 
@@ -77,13 +77,13 @@ def print_vertex_list(v_list):
 def extract_v1(vlist):
     v1list = []
     for v in vlist:
-        v1list.append(v.vertex1)
+        v1list.append(v.vertex1.name)
     return v1list
 
 
 def extract_vPair(vlist, v1):
     for v in vlist:
-        if v.vertex1 == v1:
+        if v.vertex1.name == v1.name:
             return v
     print('ERROR: no v2 found')
 
@@ -94,7 +94,7 @@ def build_graph_outof_vlist(vlist, graph1):
         new_graph.add_vertex(v)
     for v in vlist:
         for s in mod_neighbors(v.vertex1, graph1):
-            if s in extract_v1(vlist):
+            if s.name in extract_v1(vlist):
                 v_pair = extract_vPair(vlist, s)
                 new_graph.add_edges(Edge(v, v_pair))
     #TODO no_of_vertices, no_of_edges, etc nötig?
@@ -201,5 +201,5 @@ def find_mcis_without_prompt(graph1, graph2):
     print('Finding Maximal Common Induced Subgraphs...')
     find_cliques(mod_graph, firstrun=True)
     mcis_graph = build_graph_outof_vlist(mcis, graph1)
-    print(str(len(mcis_graph.vertices)))
+    print('Vertices:',len(mcis_graph.vertices), 'Edges:', len(mcis_graph.edges))
     return mcis_graph
