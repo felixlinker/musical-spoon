@@ -181,6 +181,8 @@ def find_cliques(graphobject, firstrun):
 
 
 def find_mcis(graph1, graph2):
+    global longest_vlist
+    longest_vlist = 0
     mod_graph = modular_product(graph1, graph2)
     print('Finding Maximal Common Induced Subgraphs...')
     find_cliques(mod_graph, firstrun=True)
