@@ -14,10 +14,15 @@ from show_graph import *
 def mod_neighbors(vertex, graph):
     neighbor_list = []
     for edge in graph.edges:
-        if edge.vertex_a.name is vertex.name:
+        if edge.vertex_a.name is vertex.name or edge.vertex_a.name == vertex.name:
             neighbor_list.append(edge.vertex_b)
-        elif edge.vertex_b.name is vertex.name:
+        elif edge.vertex_b.name is vertex.name or edge.vertex_b.name == vertex.name:
             neighbor_list.append(edge.vertex_a)
+        # elif edge.vertex_a.name.find(';') >= 0:
+        #     if edge.vertex_a.name.split(';')[0] is vertex.name:
+        #         neighbor_list.append(edge.vertex_b.vertex1)
+        #     elif edge.vertex_b.name.split(';')[0] is vertex.name:
+        #         neighbor_list.append(edge.vertex_a.vertex1)
     return neighbor_list
 
 
@@ -27,7 +32,7 @@ def modular_product(graph, graph1):
     controlset = set()
 
     for i in itertools.product(graph.vertices, graph1.vertices): # Kartesisches Produkt der beiden Graphen -> wird in neuer Klasse abgespeicher
-        m_vertex_list.append(ModularVertex(i[0].name+' ; '+i[1].name, i[0], i[1]))
+        m_vertex_list.append(ModularVertex(i[0].name+';'+i[1].name, i[0], i[1]))
 
     for k in m_vertex_list:  # doppelte For-Schleife, um alle Beziehungen abzudecken
         for l in m_vertex_list:
@@ -77,13 +82,13 @@ def print_vertex_list(v_list):
 def extract_v1(vlist):
     v1list = []
     for v in vlist:
-        v1list.append(v.vertex1.name)
+        v1list.append(v.vertex1)
     return v1list
 
 
 def extract_vPair(vlist, v1):
     for v in vlist:
-        if v.vertex1.name == v1.name:
+        if v.vertex1 == v1:
             return v
     print('ERROR: no v2 found')
 
@@ -94,7 +99,7 @@ def build_graph_outof_vlist(vlist, graph1):
         new_graph.add_vertex(v)
     for v in vlist:
         for s in mod_neighbors(v.vertex1, graph1):
-            if s.name in extract_v1(vlist):
+            if s in extract_v1(vlist):
                 v_pair = extract_vPair(vlist, s)
                 new_graph.add_edges(Edge(v, v_pair))
     #TODO no_of_vertices, no_of_edges, etc nötig?
@@ -197,6 +202,8 @@ def find_mcis(graph1, graph2):
 #Dieser hier wird für den Guidetree als Alternative benötigt, da wir zur Konstruktion nie mehr
     #als den maximum subgraph brauchen.
 def find_mcis_without_prompt(graph1, graph2):
+    global longest_vlist
+    longest_vlist = 0
     mod_graph = modular_product(graph1, graph2)
     print('Finding Maximal Common Induced Subgraphs...')
     find_cliques(mod_graph, firstrun=True)
