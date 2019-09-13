@@ -24,7 +24,7 @@ class guide_tree:
     def score_similarity(self, g1, g2):
         #This will of course need to be reworked to include a function to judge the relative
         #similarityof two graphs...
-        return (len(g1.edges) - len(g2.edges))
+        return abs(len(g1.edges) - len(g2.edges))
     
     def __init__(self, graph_list: [] = None):
         
@@ -38,13 +38,13 @@ class guide_tree:
                     score_matrix[n].append(self.score_similarity(graph_list[n], graph_list[b]))
                     
                 else:
-                    score_matrix[n].append(999)
+                    score_matrix[n].append(9999)
         #---------------------------------------------------          
         pairs = []
         hold_last = None
 
         for n in range(0, len(score_matrix)):
-            minimal = 999
+            minimal = 9999
             minimal_pos = []
             if graph_list[n] != None:
                 X = 0
@@ -69,17 +69,29 @@ class guide_tree:
         while l > 1 or hold_last != None:
             tmp = []
             for n in range(0, len(pairs)):
-                tmp.append(self.call_subgraph_algorithm(pairs[n][0], pairs[n][1]))
-                newick.append([pairs[n][0], pairs[n][1]])
+                a = self.call_subgraph_algorithm(pairs[n][0], pairs[n][1])
+                tmp.append(a)
+                print("Edges here:")
+                print(str(len(a.edges)))
+            
+            #If we are already down to only 2 merged subgraphs, we can also end the cycle here 
+            #under certain conditions:
             pairs = []
+            if len(tmp) == 2:
+                pairs.append([tmp[0], tmp[1]])
+                break
+            elif len(tmp) == 1 and hold_last !=None:
+                pairs.append([tmp[0], hold_last])
+                hold_last =None
+                break
             
             #The following handles the situation of an uneven number of inputs - the remainder gets prioritized 
             #and aligned with one of the already induced subgraphs
-            if hold_last != None:
-                m = 999
+            elif hold_last != None:
+                m = 9999
                 for n in range(0, len(tmp)):
                     hold_similarity = self.score_similarity(tmp[n], hold_last)
-                    print(str(hold_similarity))
+                    #print(str(hold_similarity))
                     if  hold_similarity < m:
                             m = hold_similarity
                             m_hold_index = n
@@ -87,27 +99,34 @@ class guide_tree:
                 tmp[m_hold_index] = self.call_subgraph_algorithm(tmp[m_hold_index], hold_last)
                 hold_last = None
             
-            if len(tmp) == 1:
-                pairs = tmp
-                break
+            
             #Basically we have to find the next two best pairs and repeat this ad infinium until our tree is done
-            for n in range(0, len(tmp)):
-                m_hold = tmp[n]
-                m = 999
-                for b in range(n, len(tmp)):
+            for n in range(0, len(tmp)-1):
+                m_hold = None
+                m = 9999
+                b_index = 0
+                for b in range(n+1, len(tmp)):
                     if tmp[b] != None:
                         hold_similarity = self.score_similarity(tmp[n], tmp[b])
                         if  hold_similarity < m:
                             m = hold_similarity
                             m_hold = tmp[b]
-                
-                if m_hold != tmp[n]:
+                            b_index = b
+                            
+                if m_hold != None:
                     pairs.append([tmp[n], m_hold])
-                else:
-                    hold_last = m_hold
+                    tmp[n] = None
+                    tmp[b_index] = None
+                
+            if (not None) in tmp:
+                for v in tmp:
+                    if v != None:
+                        hold_last = v
             
             l = len(pairs)
-                
+        
+        #The result variable contains the maximum subgraph accoding to the heuristics of the
+        #progressive alignment
         self.result = self.call_subgraph_algorithm(pairs[0][0], pairs[0][1])
 
         #-------------------------------------------------

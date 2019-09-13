@@ -14,10 +14,15 @@ from show_graph import *
 def mod_neighbors(vertex, graph):
     neighbor_list = []
     for edge in graph.edges:
-        if edge.vertex_a is vertex:
+        if edge.vertex_a.name is vertex.name or edge.vertex_a.name == vertex.name:
             neighbor_list.append(edge.vertex_b)
-        elif edge.vertex_b is vertex:
+        elif edge.vertex_b.name is vertex.name or edge.vertex_b.name == vertex.name:
             neighbor_list.append(edge.vertex_a)
+        # elif edge.vertex_a.name.find(';') >= 0:
+        #     if edge.vertex_a.name.split(';')[0] is vertex.name:
+        #         neighbor_list.append(edge.vertex_b.vertex1)
+        #     elif edge.vertex_b.name.split(';')[0] is vertex.name:
+        #         neighbor_list.append(edge.vertex_a.vertex1)
     return neighbor_list
 
 
@@ -27,7 +32,7 @@ def modular_product(graph, graph1):
     controlset = set()
 
     for i in itertools.product(graph.vertices, graph1.vertices): # Kartesisches Produkt der beiden Graphen -> wird in neuer Klasse abgespeicher
-        m_vertex_list.append(ModularVertex(i[0].name+' ; '+i[1].name, i[0], i[1]))
+        m_vertex_list.append(ModularVertex(i[0].name+';'+i[1].name, i[0], i[1]))
 
     for k in m_vertex_list:  # doppelte For-Schleife, um alle Beziehungen abzudecken
         for l in m_vertex_list:
@@ -176,6 +181,8 @@ def find_cliques(graphobject, firstrun):
 
 
 def find_mcis(graph1, graph2):
+    global longest_vlist
+    longest_vlist = 0
     mod_graph = modular_product(graph1, graph2)
     print('Finding Maximal Common Induced Subgraphs...')
     find_cliques(mod_graph, firstrun=True)
@@ -197,9 +204,11 @@ def find_mcis(graph1, graph2):
 #Dieser hier wird für den Guidetree als Alternative benötigt, da wir zur Konstruktion nie mehr
     #als den maximum subgraph brauchen.
 def find_mcis_without_prompt(graph1, graph2):
+    global longest_vlist
+    longest_vlist = 0
     mod_graph = modular_product(graph1, graph2)
     print('Finding Maximal Common Induced Subgraphs...')
     find_cliques(mod_graph, firstrun=True)
     mcis_graph = build_graph_outof_vlist(mcis, graph1)
-    print(str(len(mcis_graph.vertices)))
+    print('Vertices:',len(mcis_graph.vertices), 'Edges:', len(mcis_graph.edges))
     return mcis_graph
