@@ -114,6 +114,18 @@ def F(s, n, m, g1, g2):
     count_m_succ = False
     count_n_pred = False
     count_m_pred = False
+    n_neighbors = n_predecessors + n_successors
+    m_neighbors = m_predecessors + m_successors
+    n_bool = False
+    m_bool = False
+    for i in n_neighbors:
+        if i in s[1]:
+            n_bool = True
+            break
+    for q in m_neighbors:
+        if q in s[0]:
+            m_bool = True
+            break
     Tin_n = 0
     Tout_n = 0
     M_n = 0
@@ -121,76 +133,119 @@ def F(s, n, m, g1, g2):
     Tout_m = 0
     M_m = 0
 
-    if s[0][n] is not None and s[1][m] is not None:
-        for n in n_successors:  # guckt, ob alle Nachfolger von n auch ein Äquivalten in m haben
-            if s[0][n] is not None:
-                if s[1][s[0][n]] in m_successors:
-                    count_n_succ = True
+
+
+
+    if n_bool or m_bool:
+            for x in n_successors:  # guckt, ob alle Nachfolger von n auch ein Äquivalten in m haben
+                if s[0][x] is not None:
+                        #if s[1][s[0][n]] in m_successors:
+                        if s[0][x] in m_successors:
+                            count_n_succ = True
+                        else:
+                            count_n_succ = False
+                            break
                 else:
-                    count_n_succ = False
-                    break
-            else:
+                        count_n_succ = True
+
+            for y in m_successors:  # guckt, ob alle Nachfolger von m auch ein Äquivalten in n haben
+                    if s[1][y] is not None:
+                        #if s[0][s[1][m]] in n_successors:
+                        if s[1][y] in n_successors:
+                            count_m_succ = True
+                        else:
+                            count_m_succ = False
+                            break
+                    else:
+                        count_m_succ = True
+
+            for x in n_predecessors:  # same same
+                    if s[0][x] is not None:
+                        #if s[1][s[0][n]] in m_predecessors:
+                        if s[0][x] in m_predecessors:
+                            count_n_pred = True
+                        else:
+                            count_n_pred = False
+                            break
+                    else:
+                        count_n_pred = True
+
+            for y in m_predecessors:  # same same
+
+                    if s[1][y] is not None:
+                        #if s[0][s[1][m]] in n_predecessors:
+                        if s[1][y] in n_predecessors:
+                            count_m_pred = True
+                        else:
+                            count_m_pred = False
+                            break
+                    else:
+                        count_m_pred = True
+            if len(n_successors) == 0:
                 count_n_succ = True
-
-        for m in m_successors:  # guckt, ob alle Nachfolger von m auch ein Äquivalten in n haben
-            if s[1][m] is not None:
-                if s[0][s[1][m]] in n_successors:
-                    count_m_succ = True
-                else:
-                    count_m_succ = False
-                    break
-            else:
-                count_m_succ = True
-
-        for n in n_predecessors:  # same same
-
-            if s[0][n] is not None:
-                if s[1][s[0][n]] in m_predecessors:
-                    count_n_pred = True
-                else:
-                    count_n_pred = False
-                    break
-            else:
+            if len(n_predecessors) == 0:
                 count_n_pred = True
-
-        for m in m_predecessors:  # same same
-
-            if s[1][m] is not None:
-                if s[0][s[1][m]] in n_predecessors:
-                    count_m_pred = True
-                else:
-                    count_m_pred = False
-                    break
-            else:
+            if len(m_successors) == 0:
+                count_m_succ = True
+            if len(m_predecessors) == 0:
                 count_m_pred = True
 
-        if count_m_pred and count_n_pred and count_n_succ and count_m_succ:
-            return True
+            if count_m_pred and count_n_pred and count_n_succ and count_m_succ:
+                return True
     else:
-        for i in range(0, len(s[0])):  # Berechnet die Knoten im Matching
-            if s[0][i] is not None:
-                M_n += 1
-            if s[2][i] != 0:
-                Tout_n += 1
-            if s[4][i] != 0:
-                Tin_n += 1
+            for i in range(0, len(s[0])):  # Berechnet die Knoten im Matching
+                    if s[0][i] is not None:
+                        M_n += 1
+                    if s[2][i] != 0:
+                        Tout_n += 1
+                    if s[4][i] != 0:
+                        Tin_n += 1
 
-        for i in range(0, len(s[1])):
-            if s[1][i] is not None:
-                M_m += 1
-            if s[3][i] != 0:
-                Tout_m += 1
-            if s[5][i] != 0:
-                Tin_m += 1
+            for i in range(0, len(s[1])):
+                    if s[1][i] is not None:
+                        M_m += 1
+                    if s[3][i] != 0:
+                        Tout_m += 1
+                    if s[5][i] != 0:
+                        Tin_m += 1
 
-        N_n = (len(g1.vertices) - M_n - Tin_n - Tout_n)
-        N_m = (len(g2.vertices) - M_m - Tin_m - Tout_m)
+            N_n = (len(g1.vertices) - M_n - Tin_n - Tout_n)
+            N_m = (len(g2.vertices) - M_m - Tin_m - Tout_m)
 
-        if Tout_n >= Tout_m and Tin_n >= Tin_m and N_n >= N_m:
-            return True
+            if Tout_n >= Tout_m and Tin_n >= Tin_m and N_n >= N_m:
+                    return True
 
     return False
 
+def restore_Datatyp(s, v, depth):
+    s_restored = s
+    if v[0] in s_restored[0]:
+        s_restored[0][s_restored[0].index(v[0])] = None
+
+    if v[1] in s_restored[1]:
+        s_restored[1][s_restored[1].index(v[1])] = None
+
+    if depth in s_restored[2]:
+        for i in range(0, len(s)):
+            if s_restored[2][i] == depth:
+                s_restored[2][i] = 0
+
+    if depth in s_restored[3]:
+        for i in range(0, len(s)):
+            if s_restored[3][i] == depth:
+                s_restored[3][i] = 0
+
+    if depth in s_restored[4]:
+        for i in range(0, len(s)):
+            if s_restored[4][i] == depth:
+                s_restored[4][i] = 0
+
+    if depth in s_restored[5]:
+        for i in range(0, len(s)):
+            if s_restored[5][i] == depth:
+                s_restored[5][i] = 0
+
+    return s_restored
 
 # A function that generates potential matching candidates from the remaining unmapped parts of the graph.
 def P(s, g1, g2):
@@ -235,11 +290,20 @@ def P(s, g1, g2):
 
     return [N1, min(N2)]
 
+def get_depth(s):
+    depth = 0
+    for n in range(0, len(s[0])):
+        if s[0][n] is not None:
+            depth += 1
+    return depth
 
 # The core function of the Cordella algorithm - loops until one graph is successfully mapped onto the other.
-def match(s, g1, g2):
+def match(s, g1, g2, v):
     # First we have to fill the predecessor and successor vectors.
     match_return = [None, None, False]
+    depth = get_depth(s)
+    match_made = False
+
     print("Start matching round.")
     if None not in s[0] or None not in s[1]:
         # Since we assume a graph-graph or a graph-subgraph isomorphism, if either core_1 or core_2 are completely filled,
@@ -248,7 +312,6 @@ def match(s, g1, g2):
         return [s[0], s[1], t]
 
     else:
-        s_tmp = s
         # If someone has an idea how to do this without dragging g1, g2 into every new function, let me know.
         p = P(s, g1, g2)
         # I propose for simplicity to save the candidates returned by P(s) in two vectors (one containing all values of n,
@@ -256,41 +319,48 @@ def match(s, g1, g2):
         # to save the carthesian product, because it implicitly follows from looping over all values n (m seems to always
         # be one value anyways). Careful, these have to be indices.
         for n in p[0]:
-
+            if n == 7 and p[1] == 6:
+                print("r")
             if None not in s[0] or None not in s[1]:
                 break
                 # t = True
                 # return [s[0], s[1], t]
-
+            if n in s[0] or p[1] in s[1]:
+                break
             if F(s, n, p[1], g1, g2):
                 # The following just adds the indices of the newly matched nodes in the right positions in the core_1, core_2
                 # vectors...
                 s[0][n] = p[1]
                 s[1][p[1]] = n
-
+                v = [p[1], n]
+                depth = get_depth(s)
+                match_made = True
                 # Now we have to update the lists of successors and predecessors, that is we add all successors and
                 # predecessors
                 # of the newly matched nodes that are not themselves matched:
                 for a in find_successors(g1.vertices[n]):
                     if s[0][a] == None and a not in s[2]:
-                        s[2][a] = 1
+                        s[2][a] = depth
 
                 for a in find_successors(g2.vertices[p[1]]):
                     if s[1][a] == None and a not in s[3]:
-                        s[3][a] = 1
+                        s[3][a] = depth
 
                 for a in find_predecessors(g1.vertices[n]):
                     if s[0][a] == None and a not in s[4]:
-                        s[4][a] = 1
+                        s[4][a] = depth
 
                 for a in find_predecessors(g2.vertices[p[1]]):
                     if s[1][a] == None and a not in s[5]:
-                        s[5][a] = 1
+                        s[5][a] = depth
 
-                match_return = match(s, g1, g2)
+                match_return = match(s, g1, g2, v)
 
         if match_return[2] is not True:
-            return s_tmp
+            if match_made:
+                return restore_Datatyp(s, v, depth)
+            else:
+                return s
         else:
             return match_return
 
@@ -330,10 +400,11 @@ def initialize_match(s, g1, g2):
                 for i in range(0, len(pred_m)):
                     s[5][pred_m[i]] = 1
                 found = True
+                v = [g2.vertices[0].name, n.name]
                 break
 
     if found:
-        return match(s, g1, g2)
+        return match(s, g1, g2, v)
     else:
         print("No initial match found.")
 
@@ -363,6 +434,7 @@ def Cordella(g1, g2):
 
     # Initialize core_1, core_2 where indices of corresponding matched node is saved
     print("Initialize...")
+    print(len(g1.vertices))
     core_1 = [None] * len(g1.vertices)
     core_2 = [None] * len(g2.vertices)
     # Initialize in_1, out_1 and in_2, out_2 as empty - since there are no nodes matched right now, it is impossible
@@ -383,4 +455,10 @@ def Cordella(g1, g2):
     if cord == None:
         print("Invalid pairs - no isomorphism could be found.")
     else:
+        for i in range(0, len(g1.vertices)):
+            g1.vertices[i].name = hold_g1[i]
+
+        for i in range(0, len(g2.vertices)):
+            g2.vertices[i].name = hold_g2[i]
+
         create_output_table(cord[0], cord[1], hold_g1, hold_g2)

@@ -4,21 +4,21 @@ Nodes labelled;True
 Edges labelled;False
 Directed graph;False
 
-Wetter;a;2;6
-2;b;Wetter;8;3
-3;c;4;2
-4;d;5;9;3
+1;a;2;6
+2;b;1;8;3
+3;c;2
+4;d;5;9;8
 5;e;4;6
-6;f;5;7;Wetter
+6;f;5;7;1
 7;g;6
-8;h;2
+8;h;2;4
 9;i;4
 
-Wetter;2
-Wetter;6
+1;2
+1;6
 2;8
 2;3
-3;4
+8;4
 4;5
 4;9
 5;6
