@@ -47,7 +47,7 @@ def find_successors(v):
                 # Circular structures in graphs are a thing...I guess? So better keep this in to prevent adding the same index
                 # several times.
                 out.append(v.successors[i].name)
-                # out += find_successors(v.successors[i])
+                #out += find_successors(v.successors[i])
 
         out2 = []
         for i in range(0, len(out)):
@@ -69,7 +69,7 @@ def find_predecessors(v):
 
             if v.predecessors[i].name not in in_ and v.predecessors[i].name != v.name:
                 in_.append(v.predecessors[i].name)
-                # in_ += find_predecessors(v.predecessors[i])
+                #in_ += find_predecessors(v.predecessors[i])
 
         in_2 = []
         for i in range(0, len(in_)):
@@ -95,6 +95,8 @@ def atomic_identity(x, y, g1, g2):
 # The following is the Feasibility function of the Cordella algorithm, required to check, if a proposed matching results in branches,
 # that are not mutually exclusive.
 def F(s, n, m, g1, g2):
+    if n in s[1] or m in s[0]:
+        return False
     n_successors = []
     n_predecessors = []
     m_successors = []
@@ -118,7 +120,7 @@ def F(s, n, m, g1, g2):
     m_neighbors = m_predecessors + m_successors
     n_bool = False
     m_bool = False
-    for i in n_neighbors:
+    for i in n_neighbors:           # wird geprüft, ob eine Verbindung zwischen m oder n ins Matching besteht
         if i in s[1]:
             n_bool = True
             break
@@ -136,10 +138,10 @@ def F(s, n, m, g1, g2):
 
 
 
-    if n_bool or m_bool:
+    if n_bool or m_bool:    # es wird geprüft, ob eine Verbindung zum Matching besteht
+
             for x in n_successors:  # guckt, ob alle Nachfolger von n auch ein Äquivalten in m haben
                 if s[0][x] is not None:
-                        #if s[1][s[0][n]] in m_successors:
                         if s[0][x] in m_successors:
                             count_n_succ = True
                         else:
@@ -150,7 +152,6 @@ def F(s, n, m, g1, g2):
 
             for y in m_successors:  # guckt, ob alle Nachfolger von m auch ein Äquivalten in n haben
                     if s[1][y] is not None:
-                        #if s[0][s[1][m]] in n_successors:
                         if s[1][y] in n_successors:
                             count_m_succ = True
                         else:
@@ -161,7 +162,6 @@ def F(s, n, m, g1, g2):
 
             for x in n_predecessors:  # same same
                     if s[0][x] is not None:
-                        #if s[1][s[0][n]] in m_predecessors:
                         if s[0][x] in m_predecessors:
                             count_n_pred = True
                         else:
@@ -171,9 +171,7 @@ def F(s, n, m, g1, g2):
                         count_n_pred = True
 
             for y in m_predecessors:  # same same
-
                     if s[1][y] is not None:
-                        #if s[0][s[1][m]] in n_predecessors:
                         if s[1][y] in n_predecessors:
                             count_m_pred = True
                         else:
@@ -181,8 +179,9 @@ def F(s, n, m, g1, g2):
                             break
                     else:
                         count_m_pred = True
-            if len(n_successors) == 0:
-                count_n_succ = True
+
+            if len(n_successors) == 0:    #falls es keine Succesoren oder Predecessoren gibt, werden die BolleanCounter
+                count_n_succ = True         # auch auf True gesetzt.
             if len(n_predecessors) == 0:
                 count_n_pred = True
             if len(m_successors) == 0:
@@ -193,20 +192,20 @@ def F(s, n, m, g1, g2):
             if count_m_pred and count_n_pred and count_n_succ and count_m_succ:
                 return True
     else:
-            for i in range(0, len(s[0])):  # Berechnet die Knoten im Matching
+            for i in range(0, len(s[0])):  # Berechnet die Knoten im Matching und in T_in und T_out
                     if s[0][i] is not None:
                         M_n += 1
-                    if s[2][i] != 0:
+                    if s[2][i] != 0 and s[0][i] is None:
                         Tout_n += 1
-                    if s[4][i] != 0:
+                    if s[4][i] != 0 and s[0][i] is None:
                         Tin_n += 1
 
-            for i in range(0, len(s[1])):
+            for i in range(0, len(s[1])): # same same für M2
                     if s[1][i] is not None:
                         M_m += 1
-                    if s[3][i] != 0:
+                    if s[3][i] != 0 and s[1][i] is None:
                         Tout_m += 1
-                    if s[5][i] != 0:
+                    if s[5][i] != 0 and s[1][i] is None:
                         Tin_m += 1
 
             N_n = (len(g1.vertices) - M_n - Tin_n - Tout_n)
@@ -217,30 +216,30 @@ def F(s, n, m, g1, g2):
 
     return False
 
-def restore_Datatyp(s, v, depth):
+def restore_Datatyp(s, v, depth): # es werden s, v (das zuletzt hinzugefügte Paar und die Tiefe übergeben
     s_restored = s
-    if v[0] in s_restored[0]:
+    if v[0] in s_restored[0]:           # es wird das letzte Paar wieder auf None gesetzt
         s_restored[0][s_restored[0].index(v[0])] = None
 
-    if v[1] in s_restored[1]:
+    if v[1] in s_restored[1]:           # same
         s_restored[1][s_restored[1].index(v[1])] = None
 
-    if depth in s_restored[2]:
-        for i in range(0, len(s)):
+    if depth in s_restored[2]:    # es werden alle Werte, die hinzugefügt werden über die Depth wieder auf Null gesetzt
+        for i in range(0, len(s)):  #für alle Vektoren s[2]-s[5]
             if s_restored[2][i] == depth:
                 s_restored[2][i] = 0
 
-    if depth in s_restored[3]:
+    if depth in s_restored[3]:    #same
         for i in range(0, len(s)):
             if s_restored[3][i] == depth:
                 s_restored[3][i] = 0
 
-    if depth in s_restored[4]:
+    if depth in s_restored[4]:    #same
         for i in range(0, len(s)):
             if s_restored[4][i] == depth:
                 s_restored[4][i] = 0
 
-    if depth in s_restored[5]:
+    if depth in s_restored[5]:    #same
         for i in range(0, len(s)):
             if s_restored[5][i] == depth:
                 s_restored[5][i] = 0
@@ -253,19 +252,19 @@ def P(s, g1, g2):
     T2_out = []
     T1_in = []
     T2_in = []
-    for i in range(0, len(s[2])):
+    for i in range(0, len(s[2])): # gibt nur die Kandidaten aus die in den Vektoren s[2]-s[5] und nicht im Mtaching sind
         if s[2][i] is not 0 and s[0][i] is None:
             T1_out.append(i)
 
-    for i in range(0, len(s[3])):
+    for i in range(0, len(s[3])):   #same
         if s[3][i] is not 0 and s[1][i] is None:
             T2_out.append(i)
 
-    for i in range(0, len(s[4])):
+    for i in range(0, len(s[4])):   #same
         if s[4][i] is not 0 and s[0][i] is None:
             T1_in.append(i)
 
-    for i in range(0, len(s[5])):
+    for i in range(0, len(s[5])):   #same
         if s[5][i] is not 0 and s[1][i] is None:
             T2_in.append(i)
 
@@ -290,7 +289,7 @@ def P(s, g1, g2):
 
     return [N1, min(N2)]
 
-def get_depth(s):
+def get_depth(s):       # gibt die Tiefe zurück aka die Anzahl der gemachten Paare
     depth = 0
     for n in range(0, len(s[0])):
         if s[0][n] is not None:
@@ -319,13 +318,9 @@ def match(s, g1, g2, v):
         # to save the carthesian product, because it implicitly follows from looping over all values n (m seems to always
         # be one value anyways). Careful, these have to be indices.
         for n in p[0]:
-            if n == 7 and p[1] == 6:
+            if n == 5 and p[1] == 6:
                 print("r")
             if None not in s[0] or None not in s[1]:
-                break
-                # t = True
-                # return [s[0], s[1], t]
-            if n in s[0] or p[1] in s[1]:
                 break
             if F(s, n, p[1], g1, g2):
                 # The following just adds the indices of the newly matched nodes in the right positions in the core_1, core_2
@@ -356,8 +351,8 @@ def match(s, g1, g2, v):
 
                 match_return = match(s, g1, g2, v)
 
-        if match_return[2] is not True:
-            if match_made:
+        if match_return[2] is False: # prüft, ob ein Graph vollständig auf den anderen gemacht worden ist.
+            if match_made: # Falls im letzen Schritt ein Match gemacht worden ist, wird dieser Rückgängig gemacht
                 return restore_Datatyp(s, v, depth)
             else:
                 return s
