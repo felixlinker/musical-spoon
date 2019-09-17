@@ -123,8 +123,6 @@ class guide_tree:
                         hold_last = v
             
             l = len(pairs)
-            print("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
-            print(str(l))
         
         #The result variable contains the maximum subgraph accoding to the heuristics of the
         #progressive alignment
