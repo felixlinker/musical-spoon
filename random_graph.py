@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sat May 11 15:17:23 2019
-
-
 """
 
 import numpy as np
@@ -55,7 +53,7 @@ def random_graph(lower_node_limit, upper_node_limit):
     
     
     
-def random_chess_graph(lower_node_limit, upper_node_limit, deletion_chance):
+def random_chess_graph(lower_node_limit, upper_node_limit, deletion_chance = 0):
     
     #Note: It is absolutely crucial, that the deletion_chance parameter is a value between 0 and 1. Bad things happen otherwise. 
     #The deletion chance corresponds to the probability, that a given possible edge does NOT exist in the graph and is universal for all edges. 
@@ -65,9 +63,11 @@ def random_chess_graph(lower_node_limit, upper_node_limit, deletion_chance):
     edge_list =[]
     
     #Number of nodes ------------------------------------------------
-    n_nodes = np.random.randint(lower_node_limit +1, upper_node_limit +2)
-     
-    #For simplicity, we scout for the next value with a square root that is a natural number. 
+    if lower_node_limit == upper_node_limit:
+        n_nodes = lower_node_limit
+    else:
+        n_nodes = np.random.randint(low = lower_node_limit, high = upper_node_limit)
+        #For simplicity, we scout for the next value with a square root that is a natural number. 
     #This smoothes the for-loops later on, as we don't have to account for weird appdendices 
     while (np.sqrt(n_nodes) % 1 != 0):
        n_nodes += 1
@@ -109,7 +109,7 @@ def locate_vertex(vertex_list, name):
     #Try-catch-Block wäre angebracht
     return -1
 
-def random_triangular_graph(lower_node_limit, upper_node_limit, deletion_chance):
+def random_triangular_graph(lower_node_limit, upper_node_limit, deletion_chance = 0):
     
     n_nodes = 0
     vertex_list = []
@@ -117,8 +117,11 @@ def random_triangular_graph(lower_node_limit, upper_node_limit, deletion_chance)
     edge_names = []
     
     #Number of nodes
-    nodes_limit = np.random.randint(lower_node_limit +1, upper_node_limit +2)
-    
+    if lower_node_limit == upper_node_limit:
+        nodes_limit = lower_node_limit
+    else:
+        nodes_limit = np.random.randint(low = lower_node_limit, high = upper_node_limit)
+       
     #For the graph, we want a triangle with sides of equal length, therefore:
     side_length = 1
     while n_nodes <= nodes_limit:
@@ -199,5 +202,4 @@ def cut_edges(graph, chance):
             g.edges.remove(e)
     
     return g
-
 
