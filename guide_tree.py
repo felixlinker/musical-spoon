@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon Sep  2 13:57:44 2019
-
 @author: Christopher
 """
 
@@ -40,39 +39,39 @@ class guide_tree:
                 else:
                     score_matrix[n].append(9999)
         #---------------------------------------------------          
+        
         pairs = []
         hold_last = None
 
-        for n in range(0, len(score_matrix)):
+        for n in range(0, len(graph_list)):
             minimal = 9999
-            minimal_pos = []
+            minimal_pos = [None, None]
             if graph_list[n] != None:
                 X = 0
+                #Just a cleanup, in case we have an uneven number ...
                 if len(pairs) * 2 + 1 == len(graph_list):
                     hold_last = graph_list[n]
+                    break
                     
-                #Just a cleanup, in case we have an uneven number ...
 
-                for x in range(0, len(score_matrix[n])):
+                for x in range(n, len(score_matrix[n])):
                     if score_matrix[n][x] < minimal and graph_list[x] != None:
                         minimal = score_matrix[n][x]
-                        minimal_pos = []
-                        minimal_pos.append(graph_list[n])
-                        minimal_pos.append(graph_list[x])
+                        minimal_pos[0] = (graph_list[n])
+                        minimal_pos[1] = (graph_list[x])
                         X = x
                 pairs.append((minimal_pos))
                 graph_list[X] = None
                 
         #Just a cleanup, in case we have an uneven number ...
         l = len(pairs)
-
+        
         while l > 1 or hold_last != None:
             tmp = []
             for n in range(0, len(pairs)):
                 a = self.call_subgraph_algorithm(pairs[n][0], pairs[n][1])
                 tmp.append(a)
-                print("Edges here:")
-                print(str(len(a.edges)))
+
             
             #If we are already down to only 2 merged subgraphs, we can also end the cycle here 
             #under certain conditions:
@@ -124,6 +123,8 @@ class guide_tree:
                         hold_last = v
             
             l = len(pairs)
+            print("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
+            print(str(l))
         
         #The result variable contains the maximum subgraph accoding to the heuristics of the
         #progressive alignment
