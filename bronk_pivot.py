@@ -239,13 +239,11 @@ def check_neighbors_of_vectorlist(vlist):
             elif edge.vertex_b.name is vertex.name or edge.vertex_b.name == vertex.name:
                 neighbor_list.append(edge.vertex_a)
     neighbor_list = list(dict.fromkeys(neighbor_list))  # entfernt duplikate
-    for n in neighbor_list:
+    for n in neighbor_list[:]:
         for a in vlist:
             if n not in neighbors(a):
-                try:
-                    neighbor_list.remove(n)
-                except ValueError:
-                    pass
+                neighbor_list.remove(n)
+                break
     return neighbor_list
 
 
@@ -258,6 +256,15 @@ def find_cliques_with_anker(graphobject, ankernodes, firstrun):
     for v in start_vertices[:]:
         if v in ankernodes:
             start_vertices.remove(v)
+    # for v in ankernodes:
+    #     found =  False
+    #     for n in start_vertices:
+    #         if v.name == n.name:
+    #             found = True
+    #     if found:
+    #         print(v, 'Anchor found')
+    #     else:
+    #         print(v, 'Ok')
     bronk(ankernodes, start_vertices, [], firstrun)
 
 
