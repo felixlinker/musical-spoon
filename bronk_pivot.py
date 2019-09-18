@@ -104,8 +104,14 @@ def build_graph_outof_vlist(vlist, graph1):
         for s in mod_neighbors(v.vertex1, graph1):
             if s in extract_v1(vlist):
                 v_pair = extract_vPair(vlist, s)
-                if Edge(v, v_pair) not in new_graph.edges:
-                    new_graph.add_edges(Edge(v, v_pair))
+                new_e = Edge(v, v_pair)
+                edge_in_graph = False
+                for e in new_graph.edges:
+                    if (e.vertex_a.name == new_e.vertex_a.name and e.vertex_b.name == new_e.vertex_b.name)\
+                            or (e.vertex_a.name == new_e.vertex_b.name and e.vertex_b.name == new_e.vertex_a.name):
+                        edge_in_graph = True
+                if edge_in_graph == False:
+                    new_graph.add_edges(new_e)
     #TODO no_of_vertices, no_of_edges, etc nötig?
     return new_graph
 
@@ -118,6 +124,7 @@ def neighbors(vertex):
             neighbor_list.append(edge.vertex_b)
         elif edge.vertex_b is vertex:
             neighbor_list.append(edge.vertex_a)
+    neighbor_list = list(dict.fromkeys(neighbor_list))
     return neighbor_list
 
 
@@ -205,6 +212,7 @@ def find_mcis(graph1, graph2):
             print('Bye.')
     return mcis_graph
 
+
 #Dieser hier wird für den Guidetree als Alternative benötigt, da wir zur Konstruktion nie mehr
     #als den maximum subgraph brauchen.
 def find_mcis_without_prompt(graph1, graph2):
@@ -226,10 +234,11 @@ def check_neighbors_of_vectorlist(vlist):
     neighbor_list = []
     for vertex in vlist:
         for edge in graph.edges:
-            if edge.vertex_a is vertex:
+            if edge.vertex_a.name is vertex.name or edge.vertex_a.name == vertex.name:
                 neighbor_list.append(edge.vertex_b)
-            elif edge.vertex_b is vertex:
+            elif edge.vertex_b.name is vertex.name or edge.vertex_b.name == vertex.name:
                 neighbor_list.append(edge.vertex_a)
+    neighbor_list = list(dict.fromkeys(neighbor_list))  # entfernt duplikate
     for n in neighbor_list:
         for a in vlist:
             if n not in neighbors(a):
@@ -241,11 +250,11 @@ def check_neighbors_of_vectorlist(vlist):
 
 
 def find_cliques_with_anker(graphobject, ankernodes, firstrun):
-    print('Remember that your Anchor has to be a Clique!')
+    print('Remember that your Anchor has to be a Common Induced Subgraph!')
     global graph
     graph = graphobject
     start_vertices = []
-    start_vertices = check_neighbors_of_vectorlist(ankernodes) # schnittmenge der nachbarn jedes knoten aus ankerset
+    start_vertices = check_neighbors_of_vectorlist(ankernodes)  # schnittmenge der nachbarn jedes knoten aus ankerset
     for v in start_vertices[:]:
         if v in ankernodes:
             start_vertices.remove(v)
