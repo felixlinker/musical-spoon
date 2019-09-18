@@ -319,8 +319,6 @@ def match(s, g1, g2, v):
         # to save the carthesian product, because it implicitly follows from looping over all values n (m seems to always
         # be one value anyways). Careful, these have to be indices.
         for n in p[0]:
-            if 'n == 5' and p[1] == 5:
-                print("r")
             if None not in s[0] or None not in s[1]:
                 break
             if F(s, n, p[1], g1, g2, v):
@@ -361,48 +359,48 @@ def match(s, g1, g2, v):
             return match_return
 
 
-def initialize_match(s, g1, g2):
-    # Basically, to save computation time later on, we have the program identify the first pair of matching nodes and then
-    # immediately calculate all predecessors and successors of these two nodes. These lists will then be updated with each
-    # future addition to the core_1 and core_2 vectors by removing the new matching nodes from the in_1, in_2, ou_1, out_2 vectors.
-    print("Initialize first match...")
-    found = False
-    v = []
-    for n in g1.vertices:
-        if found:
-            break
-        for m in g2.vertices:
-
-            if F(s, n.name, m.name, g1, g2, v):
-
-                # Here, the nodes that are predecessors or successors of a matched node are added to the respective vectors
-                print("Found one")
-                s[0][n.name] = g2.vertices[0].name
-                s[1][g2.vertices[0].name] = n.name
-
-                succ_n = find_successors(n)  # Vektoren s[2]-[5] werden mit 1 befüllt falls es ein Nachbar ist.
-                for i in range(0, len(succ_n)):
-                    s[2][succ_n[i]] = 1
-
-                succ_m = find_successors(m)
-                for i in range(0, len(succ_m)):
-                    s[3][succ_m[i]] = 1
-
-                pred_n = find_predecessors(n)
-                for i in range(0, len(pred_n)):
-                    s[4][pred_n[i]] = 1
-
-                pred_m = find_predecessors(m)
-                for i in range(0, len(pred_m)):
-                    s[5][pred_m[i]] = 1
-                found = True
-                v = [g2.vertices[0].name, n.name]
-                break
-
-    if found:
-        return match(s, g1, g2, v)
-    else:
-        print("No initial match found.")
+# def initialize_match(s, g1, g2):
+#     # Basically, to save computation time later on, we have the program identify the first pair of matching nodes and then
+#     # immediately calculate all predecessors and successors of these two nodes. These lists will then be updated with each
+#     # future addition to the core_1 and core_2 vectors by removing the new matching nodes from the in_1, in_2, ou_1, out_2 vectors.
+#     print("Initialize first match...")
+#     found = False
+#     v = []
+#     for n in g1.vertices:
+#         if found:
+#             break
+#         for m in g2.vertices:
+#
+#             if F(s, n.name, m.name, g1, g2, v):
+#
+#                 # Here, the nodes that are predecessors or successors of a matched node are added to the respective vectors
+#                 print("Found one")
+#                 s[0][n.name] = g2.vertices[0].name
+#                 s[1][g2.vertices[0].name] = n.name
+#
+#                 succ_n = find_successors(n)  # Vektoren s[2]-[5] werden mit 1 befüllt falls es ein Nachbar ist.
+#                 for i in range(0, len(succ_n)):
+#                     s[2][succ_n[i]] = 1
+#
+#                 succ_m = find_successors(m)
+#                 for i in range(0, len(succ_m)):
+#                     s[3][succ_m[i]] = 1
+#
+#                 pred_n = find_predecessors(n)
+#                 for i in range(0, len(pred_n)):
+#                     s[4][pred_n[i]] = 1
+#
+#                 pred_m = find_predecessors(m)
+#                 for i in range(0, len(pred_m)):
+#                     s[5][pred_m[i]] = 1
+#                 found = True
+#                 v = [g2.vertices[0].name, n.name]
+#                 break
+#
+#     if found:
+#         return match(s, g1, g2, v)
+#     else:
+#         print("No initial match found.")
 
 
 def Cordella(g1, g2):
@@ -444,8 +442,9 @@ def Cordella(g1, g2):
     # never change their order, please. As in, never ever.
     s = [core_1, core_2, out_1, out_2, in_1, in_2]
     print("Initialize complete.")
+    v = []
     # Call the Matching function
-    cord = initialize_match(s, g1, g2)
+    cord = match(s, g1, g2, v)
 
     # Make use of the output:
     if cord == None:
