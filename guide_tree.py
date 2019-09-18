@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon Sep  2 13:57:44 2019
-
 @author: Christopher
 """
 
@@ -26,9 +25,20 @@ class guide_tree:
         #similarityof two graphs...
         return abs(len(g1.edges) - len(g2.edges))
     
-    def __init__(self, graph_list: [] = None):
+    def __init__(self, graph_list: [] = None, construct_tree = False):
         
-        newick = []
+        #If a tree should be build as a graph, the graphs will need to have names.
+        tree_nodes = []
+        tree_branches = []
+        
+        #This starts building the leaves for the output guide tree:
+        if construct_tree == True:
+            vertex_dict = {}
+            for i in range(0, len(graph_list)):
+                v = Vertex(graph_list[i].name)
+                tree_nodes.append(v)
+                vertex_dict.update({v.name: v})
+        
         score_matrix = []
         for n in range(0, len(graph_list)):
             vec = []
@@ -40,44 +50,53 @@ class guide_tree:
                 else:
                     score_matrix[n].append(9999)
         #---------------------------------------------------          
+        
         pairs = []
         hold_last = None
 
-        for n in range(0, len(score_matrix)):
+        for n in range(0, len(graph_list)):
             minimal = 9999
-            minimal_pos = []
+            minimal_pos = [None, None]
             if graph_list[n] != None:
                 X = 0
+                #Just a cleanup, in case we have an uneven number ...
                 if len(pairs) * 2 + 1 == len(graph_list):
                     hold_last = graph_list[n]
+                    break
                     
-                #Just a cleanup, in case we have an uneven number ...
 
-                for x in range(0, len(score_matrix[n])):
+                for x in range(n, len(score_matrix[n])):
                     if score_matrix[n][x] < minimal and graph_list[x] != None:
                         minimal = score_matrix[n][x]
-                        minimal_pos = []
-                        minimal_pos.append(graph_list[n])
-                        minimal_pos.append(graph_list[x])
+                        minimal_pos[0] = (graph_list[n])
+                        minimal_pos[1] = (graph_list[x])
                         X = x
                 pairs.append((minimal_pos))
                 graph_list[X] = None
                 
         #Just a cleanup, in case we have an uneven number ...
         l = len(pairs)
-
+        
         while l > 1 or hold_last != None:
             tmp = []
             for n in range(0, len(pairs)):
                 a = self.call_subgraph_algorithm(pairs[n][0], pairs[n][1])
                 tmp.append(a)
-                print("Edges here:")
-                print(str(len(a.edges)))
+                #Continue building the graph representation of the tree, if needed:
+                if construct_tree == True:
+                    v = Vertex(str(a.name))
+                    tree_nodes.append(v)
+                    vertex_dict.update({v.name: v})
+                    e1 = Edge(vertex_dict.get(pairs[n][0].name), v)
+                    e2 = Edge(vertex_dict.get(pairs[n][1].name), v)
+                    print(str(v.name))
+                    tree_branches.append(e1)
+                    tree_branches.append(e2)
             
             #If we are already down to only 2 merged subgraphs, we can also end the cycle here 
             #under certain conditions:
             pairs = []
-            if len(tmp) == 2:
+            if len(tmp) == 2 and hold_last == None:
                 pairs.append([tmp[0], tmp[1]])
                 break
             elif len(tmp) == 1 and hold_last !=None:
@@ -95,8 +114,18 @@ class guide_tree:
                     if  hold_similarity < m:
                             m = hold_similarity
                             m_hold_index = n
-                        
+                
+                tmp_tmp = tmp[m_hold_index]
                 tmp[m_hold_index] = self.call_subgraph_algorithm(tmp[m_hold_index], hold_last)
+                if construct_tree == True:
+                    v = Vertex(str(tmp[m_hold_index].name))
+                    tree_nodes.append(v)
+                    vertex_dict.update({v.name: v})
+                    e1 = Edge(vertex_dict.get(hold_last.name), v)
+                    e2 = Edge(vertex_dict.get(tmp_tmp.name), v)
+                    tree_branches.append(e1)
+                    tree_branches.append(e2)
+                tmp_tmp = None
                 hold_last = None
             
             
@@ -128,6 +157,16 @@ class guide_tree:
         #The result variable contains the maximum subgraph accoding to the heuristics of the
         #progressive alignment
         self.result = self.call_subgraph_algorithm(pairs[0][0], pairs[0][1])
+        if construct_tree == True:
+            v = Vertex(str(self.result.name))
+            tree_nodes.append(v)
+            vertex_dict.update({v.name: v})
+            e1 = Edge(vertex_dict.get(pairs[0][0].name), v)
+            e2 = Edge(vertex_dict.get(pairs[0][1].name), v)
+            tree_branches.append(e1)
+            tree_branches.append(e2)
+            self.tree_structure = Graph(tree_nodes, tree_branches)
+            
 
         #-------------------------------------------------
     

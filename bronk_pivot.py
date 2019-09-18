@@ -23,6 +23,7 @@ def mod_neighbors(vertex, graph):
         #         neighbor_list.append(edge.vertex_b.vertex1)
         #     elif edge.vertex_b.name.split(';')[0] is vertex.name:
         #         neighbor_list.append(edge.vertex_a.vertex1)
+    neighbor_list = list(dict.fromkeys(neighbor_list))  # cast to dict and back to list removes duplicates
     return neighbor_list
 
 
@@ -53,7 +54,7 @@ def modular_product(graph, graph1):
 
 
 longest_vlist = 0   # globale Variable, um nur größte Clique zurückzugeben
-no_of_mcis = []
+no_of_mcis = []     # sind essentiell für die folgenden Funktionen
 
 
 # speichert die von bronk bisher längste gesehene Vertexlist
@@ -92,6 +93,8 @@ def extract_vPair(vlist, v1):
             return v
     print('ERROR: no v2 found')
 
+
+# nutzt einen Eingabegraphen aus modular_product() um der Vektorenliste aus bronk() die zugehörigen Kanten zuzuordnen
 def build_graph_outof_vlist(vlist, graph1):
     print_vertex_list(vlist)
     new_graph = Graph()
@@ -101,7 +104,8 @@ def build_graph_outof_vlist(vlist, graph1):
         for s in mod_neighbors(v.vertex1, graph1):
             if s in extract_v1(vlist):
                 v_pair = extract_vPair(vlist, s)
-                new_graph.add_edges(Edge(v, v_pair))
+                if Edge(v, v_pair) not in new_graph.edges:
+                    new_graph.add_edges(Edge(v, v_pair))
     #TODO no_of_vertices, no_of_edges, etc nötig?
     return new_graph
 
@@ -210,5 +214,68 @@ def find_mcis_without_prompt(graph1, graph2):
     print('Finding Maximal Common Induced Subgraphs...')
     find_cliques(mod_graph, firstrun=True)
     mcis_graph = build_graph_outof_vlist(mcis, graph1)
-    print('Vertices:',len(mcis_graph.vertices), 'Edges:', len(mcis_graph.edges))
+    if graph1.name != None and graph2.name != None:
+        mcis_graph.name = str(graph1.name + '_' + graph2.name)
+        print("Graph created: " + str(mcis_graph.name))
+    print('Vertices:', len(mcis_graph.vertices), 'Edges:', len(mcis_graph.edges))
+    return mcis_graph
+
+
+# schnittmenge der nachbarn jedes knoten aus ankerset (hier vlist)
+def check_neighbors_of_vectorlist(vlist):
+    neighbor_list = []
+    for vertex in vlist:
+        for edge in graph.edges:
+            if edge.vertex_a is vertex:
+                neighbor_list.append(edge.vertex_b)
+            elif edge.vertex_b is vertex:
+                neighbor_list.append(edge.vertex_a)
+    for n in neighbor_list:
+        for a in vlist:
+            if n not in neighbors(a):
+                try:
+                    neighbor_list.remove(n)
+                except ValueError:
+                    pass
+    return neighbor_list
+
+
+def find_cliques_with_anker(graphobject, ankernodes, firstrun):
+    print('Remember that your Anchor has to be a Clique!')
+    global graph
+    graph = graphobject
+    start_vertices = []
+    start_vertices = check_neighbors_of_vectorlist(ankernodes) # schnittmenge der nachbarn jedes knoten aus ankerset
+    for v in start_vertices[:]:
+        if v in ankernodes:
+            start_vertices.remove(v)
+    bronk(ankernodes, start_vertices, [], firstrun)
+
+
+# wandelt die Anker-Eingabe von Strings in Knoten-Objekte um
+def get_anker_nodes(modgraph, anker):
+    ankernodes = []
+    '''if anker.vertices equals modgraph.vertices.vertex1:
+        add modgraph.vertices to anknodes'''
+    for v in modgraph.vertices:
+        if v.name in anker:
+            ankernodes.append(v)
+    return ankernodes
+
+
+def find_ankered_mcis(graph1, graph2, anker):
+    '''
+    :param graph1: als Graphobjekt
+    :param graph2: als Graphobjekt
+    :param anker: als Liste in folgendem Format ankerlist = ['v1;v2', 'v3;v4', ...]
+    :return: graph-objekt
+    '''
+    global longest_vlist
+    longest_vlist = 0
+    mod_graph = modular_product(graph1, graph2)
+    print('Finding Maximal Common Induced Subgraphs...')
+    ankernodes = get_anker_nodes(mod_graph, anker)
+    find_cliques_with_anker(mod_graph, ankernodes, firstrun=True)
+    mcis_graph = build_graph_outof_vlist(mcis, graph1)
+    print('Vertices:', len(mcis_graph.vertices), 'Edges:', len(mcis_graph.edges))
     return mcis_graph

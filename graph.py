@@ -5,7 +5,7 @@ class Graph:
 
     def __init__(self, vertices: [] = None, edges: [] = None,\
                  no_of_vertices = None, no_of_edges = None,\
-                 vertices_labelled = None, edges_labelled = None, directed_graph = None):
+                 vertices_labelled = None, edges_labelled = None, directed_graph = None, name = None):
         self.vertices = vertices    # list of vertex objects
         self.edges = edges          # list of edge objects
         if vertices is None:
@@ -17,6 +17,7 @@ class Graph:
         self.vertices_labelled = vertices_labelled
         self.edges_labelled = edges_labelled
         self.directed_graph = directed_graph
+        self.name = name
 
     def add_vertex(self, vertex):
         self.vertices.append(vertex)
