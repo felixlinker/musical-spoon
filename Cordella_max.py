@@ -94,9 +94,10 @@ def atomic_identity(x, y, g1, g2):
 
 # The following is the Feasibility function of the Cordella algorithm, required to check, if a proposed matching results in branches,
 # that are not mutually exclusive.
-def F(s, n, m, g1, g2):
+def F(s, n, m, g1, g2, v):
+    depth = get_depth(s)
     if n in s[1] or m in s[0]:
-        return False
+        restore_Datatyp(s, v, depth)
     n_successors = []
     n_predecessors = []
     m_successors = []
@@ -318,11 +319,11 @@ def match(s, g1, g2, v):
         # to save the carthesian product, because it implicitly follows from looping over all values n (m seems to always
         # be one value anyways). Careful, these have to be indices.
         for n in p[0]:
-            if n == 5 and p[1] == 6:
+            if 'n == 5' and p[1] == 5:
                 print("r")
             if None not in s[0] or None not in s[1]:
                 break
-            if F(s, n, p[1], g1, g2):
+            if F(s, n, p[1], g1, g2, v):
                 # The following just adds the indices of the newly matched nodes in the right positions in the core_1, core_2
                 # vectors...
                 s[0][n] = p[1]
@@ -351,7 +352,7 @@ def match(s, g1, g2, v):
 
                 match_return = match(s, g1, g2, v)
 
-        if match_return[2] is False: # prüft, ob ein Graph vollständig auf den anderen gemacht worden ist.
+        if match_return[2] is not True: # prüft, ob ein Graph vollständig auf den anderen gemacht worden ist.
             if match_made: # Falls im letzen Schritt ein Match gemacht worden ist, wird dieser Rückgängig gemacht
                 return restore_Datatyp(s, v, depth)
             else:
@@ -366,13 +367,13 @@ def initialize_match(s, g1, g2):
     # future addition to the core_1 and core_2 vectors by removing the new matching nodes from the in_1, in_2, ou_1, out_2 vectors.
     print("Initialize first match...")
     found = False
-
+    v = []
     for n in g1.vertices:
         if found:
             break
         for m in g2.vertices:
 
-            if F(s, n.name, m.name, g1, g2):
+            if F(s, n.name, m.name, g1, g2, v):
 
                 # Here, the nodes that are predecessors or successors of a matched node are added to the respective vectors
                 print("Found one")

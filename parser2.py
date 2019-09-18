@@ -60,7 +60,7 @@ def parse(filename):
                 vertex_list.append(v)
                 vertex_dict.update({v.name: v})  # Vertex wird für Edges-Initialiserung gespeichert (Name=Key)
             elif c == 2:
-                e = Edge(vertex_dict.get(temp[0]), vertex_dict.get(temp[1]))
+                e = Edge(vertex_dict.get(temp[0]), vertex_dict.get(temp[1]), None, None, directed_graph)
                 if edges_label:
                     e.set_label(temp[2])
                 edge_list.append(e)

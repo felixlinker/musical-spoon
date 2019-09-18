@@ -6,13 +6,18 @@ class Edge:
     Edges are represented as objects
     '''
     #In this setup edges are initially treated as directed
-    def __init__(self, vertex_a=Vertex, vertex_b=Vertex, label=None, weight=None):
+    def __init__(self, vertex_a=Vertex, vertex_b=Vertex, label=None, weight=None, directed_graph=bool):
         self.vertex_a = vertex_a
         self.vertex_b = vertex_b
         if vertex_b not in vertex_a.successors:             # if bedingung wird momentan benötigt, bin aber unsicher ob sie dauerhaft drin bleiben darf
             self.vertex_a.successors.append(vertex_b)
         if vertex_a not in vertex_b.predecessors:
             self.vertex_b.predecessors.append(vertex_a)
+        if directed_graph is False:
+            if vertex_a not in vertex_b.successors:             # if bedingung wird momentan benötigt, bin aber unsicher ob sie dauerhaft drin bleiben darf
+                self.vertex_b.successors.append(vertex_a)
+            if vertex_b not in vertex_a.predecessors:
+                self.vertex_a.predecessors.append(vertex_b)
         self.label = label
         self.weight = weight
 
