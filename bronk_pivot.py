@@ -23,6 +23,7 @@ def mod_neighbors(vertex, graph):
         #         neighbor_list.append(edge.vertex_b.vertex1)
         #     elif edge.vertex_b.name.split(';')[0] is vertex.name:
         #         neighbor_list.append(edge.vertex_a.vertex1)
+    neighbor_list = list(dict.fromkeys(neighbor_list))  # cast to dict and back to list removes duplicates
     return neighbor_list
 
 
@@ -101,7 +102,8 @@ def build_graph_outof_vlist(vlist, graph1):
         for s in mod_neighbors(v.vertex1, graph1):
             if s in extract_v1(vlist):
                 v_pair = extract_vPair(vlist, s)
-                new_graph.add_edges(Edge(v, v_pair))
+                if Edge(v, v_pair) not in new_graph.edges:
+                    new_graph.add_edges(Edge(v, v_pair))
     #TODO no_of_vertices, no_of_edges, etc nötig?
     return new_graph
 
