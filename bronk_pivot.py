@@ -54,7 +54,7 @@ def modular_product(graph, graph1):
 
 
 longest_vlist = 0   # globale Variable, um nur größte Clique zurückzugeben
-no_of_mcis = []
+no_of_mcis = []     # sind essentiell für die folgenden Funktionen
 
 
 # speichert die von bronk bisher längste gesehene Vertexlist
@@ -93,6 +93,8 @@ def extract_vPair(vlist, v1):
             return v
     print('ERROR: no v2 found')
 
+
+# nutzt einen Eingabegraphen aus modular_product() um der Vektorenliste aus bronk() die zugehörigen Kanten zuzuordnen
 def build_graph_outof_vlist(vlist, graph1):
     print_vertex_list(vlist)
     new_graph = Graph()
@@ -219,6 +221,7 @@ def find_mcis_without_prompt(graph1, graph2):
     return mcis_graph
 
 
+# schnittmenge der nachbarn jedes knoten aus ankerset (hier vlist)
 def check_neighbors_of_vectorlist(vlist):
     neighbor_list = []
     for vertex in vlist:
@@ -249,6 +252,7 @@ def find_cliques_with_anker(graphobject, ankernodes, firstrun):
     bronk(ankernodes, start_vertices, [], firstrun)
 
 
+# wandelt die Anker-Eingabe von Strings in Knoten-Objekte um
 def get_anker_nodes(modgraph, anker):
     ankernodes = []
     '''if anker.vertices equals modgraph.vertices.vertex1:
