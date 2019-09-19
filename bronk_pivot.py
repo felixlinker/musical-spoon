@@ -7,7 +7,7 @@ from edge import  *
 from vertex import *
 from show_graph import *
 
-# TODO Abbruchbedingung bei zirkulären Graphen
+# TODO Überprüfen ob Vergleich von Namen ausreicht oder lieber Objektvergleich genutzt werden soll neighbors()
 
 
 # Neighborfunktion zur Berechnung des Modularen Produktes
@@ -27,13 +27,20 @@ def mod_neighbors(vertex, graph):
     return neighbor_list
 
 
+checklabel = False  # wird True gesetzt wenn nur Knoten mit identischen Label gematcht werden dürfen
+
+
 def modular_product(graph, graph1):
     m_vertex_list = []
     m_edge_list = []
     controlset = set()
 
     for i in itertools.product(graph.vertices, graph1.vertices): # Kartesisches Produkt der beiden Graphen -> wird in neuer Klasse abgespeicher
-        m_vertex_list.append(ModularVertex(i[0].name+';'+i[1].name, i[0], i[1]))
+        if checklabel:
+            if i[0].label == i[1].label:
+                m_vertex_list.append(ModularVertex(i[0].name+';'+i[1].name, i[0], i[1]))
+        else:
+            m_vertex_list.append(ModularVertex(i[0].name + ';' + i[1].name, i[0], i[1]))
 
     for k in m_vertex_list:  # doppelte For-Schleife, um alle Beziehungen abzudecken
         for l in m_vertex_list:
@@ -191,8 +198,10 @@ def find_cliques(graphobject, firstrun):
     bronk([], graph.vertices, [], firstrun)
 
 
-def find_mcis(graph1, graph2):
-    global longest_vlist
+def find_mcis(graph1, graph2, checklabels=None):
+    global longest_vlist, checklabel
+    if checklabels:
+        checklabel = True
     longest_vlist = 0
     mod_graph = modular_product(graph1, graph2)
     print('Finding Maximal Common Induced Subgraphs...')
@@ -256,15 +265,6 @@ def find_cliques_with_anker(graphobject, ankernodes, firstrun):
     for v in start_vertices[:]:
         if v in ankernodes:
             start_vertices.remove(v)
-    # for v in ankernodes:
-    #     found =  False
-    #     for n in start_vertices:
-    #         if v.name == n.name:
-    #             found = True
-    #     if found:
-    #         print(v, 'Anchor found')
-    #     else:
-    #         print(v, 'Ok')
     bronk(ankernodes, start_vertices, [], firstrun)
 
 
