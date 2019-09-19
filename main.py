@@ -7,14 +7,16 @@ from Cordella_max import Cordella
 
 def main():
 
-    g1 = parse("./Graphen/scriptG1.graph")
-    g2 = parse("./Graphen/scriptG2.graph")
-    # show_two_graphs(g1, g2)
+    # g1 = parse("./Graphen/scriptG1.graph")
+    # g2 = parse("./Graphen/cordellaTest1.graph")
+    g1 = parse('./Graphen/label1.graph')
+    g2 = parse('./Graphen/label2.graph')
 
-    anker = ['10;4']
-    mcis = find_ankered_mcis(g1, g2, anker)
+    anker = ['1;8']
+    mcis = find_mcis(g1, g2, checklabels=True)
     show_graph_comparable(g1, g2, mcis)
-
+    # Cordella(g1, g2)
+    # show_two_graphs(g1, g2)
 
 
 
