@@ -195,7 +195,7 @@ def random_triangular_graph(lower_node_limit=3, deletion_chance = 0):
     return Graph(vertex_list, edge_list)
     
 
-def complete_graph(nodes):
+def complete_graph(nodes= 10):
     
     v_list = []
     e_list = []
