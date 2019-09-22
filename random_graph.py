@@ -220,7 +220,7 @@ def cut_edges(graph, chance = 0.1):
     
     return g
 
-def add_random_nodes(g, n=1):
+def add_random_nodes(graph, n=1):
     v_list = []
     e_list = []
     for i in range(0,n):
