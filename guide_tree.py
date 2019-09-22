@@ -10,22 +10,21 @@ from edge import Edge
 from graph import Graph
 from bronk_pivot import find_mcis_without_prompt
 
+def call_subgraph_algorithm(g1, g2):
+        
+    #This is a placeholder right now, but this function handles the pipeline to the 
+    #actual alignment algorithms later on.
+    return find_mcis_without_prompt(g1, g2)
+    
+    
+def score_similarity(g1, g2):
+    #This will of course need to be reworked to include a function to judge the relative
+    #similarityof two graphs...
+    return abs(len(g1.edges) - len(g2.edges))
+
 class guide_tree:
     
-    
-    def call_subgraph_algorithm(self, g1, g2):
-        
-        #This is a placeholder right now, but this function handles the pipeline to the 
-        #actual alignment algorithms later on.
-        return find_mcis_without_prompt(g1, g2)
-    
-    
-    def score_similarity(self, g1, g2):
-        #This will of course need to be reworked to include a function to judge the relative
-        #similarityof two graphs...
-        return abs(len(g1.edges) - len(g2.edges))
-    
-    def __init__(self, graph_list: [] = None, construct_tree = False):
+    def __init__(self, graph_list: [] = None, construct_tree = True):
         
         #If a tree should be build as a graph, the graphs will need to have names.
         tree_nodes = []
@@ -45,7 +44,7 @@ class guide_tree:
             score_matrix.append(vec) #just make enough entries in the matrix
             for b in range(0, len(graph_list)):
                 if n != b:
-                    score_matrix[n].append(self.score_similarity(graph_list[n], graph_list[b]))
+                    score_matrix[n].append(score_similarity(graph_list[n], graph_list[b]))
                     
                 else:
                     score_matrix[n].append(9999)
@@ -80,7 +79,7 @@ class guide_tree:
         while l > 1 or hold_last != None:
             tmp = []
             for n in range(0, len(pairs)):
-                a = self.call_subgraph_algorithm(pairs[n][0], pairs[n][1])
+                a = call_subgraph_algorithm(pairs[n][0], pairs[n][1])
                 tmp.append(a)
                 #Continue building the graph representation of the tree, if needed:
                 if construct_tree == True:
@@ -109,14 +108,14 @@ class guide_tree:
             elif hold_last != None:
                 m = 9999
                 for n in range(0, len(tmp)):
-                    hold_similarity = self.score_similarity(tmp[n], hold_last)
+                    hold_similarity = score_similarity(tmp[n], hold_last)
                     #print(str(hold_similarity))
                     if  hold_similarity < m:
                             m = hold_similarity
                             m_hold_index = n
                 
                 tmp_tmp = tmp[m_hold_index]
-                tmp[m_hold_index] = self.call_subgraph_algorithm(tmp[m_hold_index], hold_last)
+                tmp[m_hold_index] = call_subgraph_algorithm(tmp[m_hold_index], hold_last)
                 if construct_tree == True:
                     v = Vertex(str(tmp[m_hold_index].name))
                     tree_nodes.append(v)
@@ -136,7 +135,7 @@ class guide_tree:
                 b_index = 0
                 for b in range(n+1, len(tmp)):
                     if tmp[b] != None:
-                        hold_similarity = self.score_similarity(tmp[n], tmp[b])
+                        hold_similarity = score_similarity(tmp[n], tmp[b])
                         if  hold_similarity < m:
                             m = hold_similarity
                             m_hold = tmp[b]
@@ -156,7 +155,7 @@ class guide_tree:
         
         #The result variable contains the maximum subgraph accoding to the heuristics of the
         #progressive alignment
-        self.result = self.call_subgraph_algorithm(pairs[0][0], pairs[0][1])
+        self.result = call_subgraph_algorithm(pairs[0][0], pairs[0][1])
         if construct_tree == True:
             v = Vertex(str(self.result.name))
             tree_nodes.append(v)
@@ -175,15 +174,40 @@ class guide_tree:
         
     def create_Newick(self):
         return ""
+    
+def create_tree(graph_list, draw_tree = False):
+    return guide_tree(graph_list, draw_tree)
 
-def count_input(string):
-    s = string.replace(')', '')
-    s = s.replace('(','')
-    s_cut = s.split(',')
-    return len(s_cut)    
+def traverse_tree(tree, graph_list):
+    graph_dict = {}
+    hold = []
+    for n in range(0, len(graph_list)):
+        graph_dict.update({graph_list[n].name: graph_list[n]})
+        
+    for i in range(0, len(tree.tree_structure.vertices)):
+        if '_' in tree.tree_structure.vertices[i].name:
+            for e in tree.tree_structure.edges:
+                print("Graph in Tree:" + tree.tree_structure.vertices[i].name)
+                print(e.vertex_a.name)
+                print(e.vertex_b.name)
+                if e.vertex_b.name == tree.tree_structure.vertices[i].name and len(e.vertex_a.name) < len(tree.tree_structure.vertices[i].name):
+                    hold.append(graph_dict.get(e.vertex_a.name))
+                    
+            print(len(hold))
+            g_add = call_subgraph_algorithm(hold[0], hold[1])
+            graph_list.append(g_add)
+            graph_dict.update({g_add.name: g_add})
+    
+    #If the tree was created in a structured manner, the last created subgraph should be the final one - but to be safe, we organize them, by length of 
+    #their identifier.
+    hold = graph_list[0]
+    for n in range(0, len(graph_list)):
+        if len(graph_list[n].name) > len(hold.name):
+            hold = graph_list[n]
+    return hold
 
 #The following function just aligns given list of preordered graphs in linear fashion.
-def traverse_linear_tree(ordered_graphs):
+def traverse_linear(ordered_graphs):
         
     tmp = []
     for n in range(0, len(ordered_graphs)):
