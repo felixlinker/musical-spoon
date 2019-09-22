@@ -191,7 +191,6 @@ def traverse_tree(tree, graph_list):
                 if e.vertex_b.name == tree.tree_structure.vertices[i].name and len(e.vertex_a.name) < len(tree.tree_structure.vertices[i].name):
                     hold.append(graph_dict.get(e.vertex_a.name))
                     
-            print(len(hold))
             g_add = call_subgraph_algorithm(hold[0], hold[1])
             graph_list.append(g_add)
             graph_dict.update({g_add.name: g_add})
