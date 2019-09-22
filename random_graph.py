@@ -208,7 +208,7 @@ def complete_graph(nodes= 10):
 
 
 #Just a small tool to randomly delete edges in a graph based on chance
-def cut_edges(graph, chance):
+def cut_edges(graph, chance = 0.1):
     
     g = graph
     
@@ -220,3 +220,16 @@ def cut_edges(graph, chance):
     
     return g
 
+def add_random_nodes(g, n=1):
+    v_list = []
+    e_list = []
+    for i in range(0,n):
+        v_list.append(Vertex(('add_' + str(i))))
+    
+    for i in range(0, len(v_list)):
+        e_list.append(Edge(v_list[i], g.vertices[np.random.randint(low = 0, high = len(g.vertices))]))
+    
+    for i in range(0, len(v_list)):
+        g.vertices.append(v_list[i])
+        g.edges.append(e_list[i])
+    return g
