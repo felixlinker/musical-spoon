@@ -9,7 +9,7 @@ from edge import Edge
 from graph import Graph
 
 
-def random_graph(lower_node_limit, upper_node_limit):
+def random_graph(lower_node_limit=1, upper_node_limit=10, more_edges = False):
     
     #Note: It is absolutely crucial, that the deletion_chance parameter is a value between 0 and 1. Bad things happen otherwise. 
     #The deletion chance corresponds to the probability, that a given possible edge does NOT exist in the graph and is universal for all edges. 
@@ -32,20 +32,33 @@ def random_graph(lower_node_limit, upper_node_limit):
     #Generate a set of edges
     edge_matrix = np.zeros((n_nodes+1, n_nodes+1))
 
+    #Edges are generated in correspondence to a matrix, which contains all possible combinations of vertices. Then edges are added at random. The 
+    #exact chance for addition of an edge was based on a testing period during development.
     for i in range(0, n_nodes):
-        edge_matrix[i][0] = i
-        edge_matrix[0][i] = i
-        
-
-    for i in range(1, n_nodes):
                 
             if i+1 < n_nodes:
-                x = np.random.randint(i+1, n_nodes)
-                if edge_matrix[x][i] == 0 and (95) > np.random.randint(low=1, high=100):
+                x = np.random.randint(low = i+1, high = n_nodes)
+                if edge_matrix[x][i] == 0 and (90) > np.random.randint(low=1, high=100):
                     e = Edge(vertex_list[i], vertex_list[x])
                     edge_matrix[i][x] = 1
                     edge_matrix[x][i] = 1
                     edge_list.append(e)
+                if more_edges:
+                    x = np.random.randint(low = i+1, high = n_nodes)
+                    if edge_matrix[x][i] == 0 and (90) > np.random.randint(low=1, high=100):
+                        e = Edge(vertex_list[i], vertex_list[x])
+                        edge_matrix[i][x] = 1
+                        edge_matrix[x][i] = 1
+                        edge_list.append(e)
+
+    for n in range(0, len(vertex_list)):
+        if 1 not in edge_matrix[n]:
+            s = False
+            while s == False:
+                x = np.random.randint(0, n_nodes)
+                if x != n:
+                    edge_list.append(Edge(vertex_list[i], vertex_list[x]))
+                    s = True
 
     #Create the Graph.
     g = Graph(vertex_list, edge_list)
@@ -53,9 +66,9 @@ def random_graph(lower_node_limit, upper_node_limit):
     
     
     
-def random_chess_graph(lower_node_limit, upper_node_limit, deletion_chance = 0):
+def random_chess_graph(lower_node_limit=4, deletion_chance = 0):
     
-    #Note: It is absolutely crucial, that the deletion_chance parameter is a value between 0 and 1. Bad things happen otherwise. 
+    #Note: It is absolutely crucial, that the deletion_chance parameter, if given, is a value in the interval (0, 1). Bad things happen otherwise. 
     #The deletion chance corresponds to the probability, that a given possible edge does NOT exist in the graph and is universal for all edges. 
     
     n_nodes = 0
@@ -63,10 +76,8 @@ def random_chess_graph(lower_node_limit, upper_node_limit, deletion_chance = 0):
     edge_list =[]
     
     #Number of nodes ------------------------------------------------
-    if lower_node_limit == upper_node_limit:
-        n_nodes = lower_node_limit
-    else:
-        n_nodes = np.random.randint(low = lower_node_limit, high = upper_node_limit)
+
+    n_nodes = lower_node_limit
         #For simplicity, we scout for the next value with a square root that is a natural number. 
     #This smoothes the for-loops later on, as we don't have to account for weird appdendices 
     while (np.sqrt(n_nodes) % 1 != 0):
@@ -83,7 +94,7 @@ def random_chess_graph(lower_node_limit, upper_node_limit, deletion_chance = 0):
     #Now for the edges. In this type of graph, only edges between direct neighbors on the "chessboard"
     #may exist, that is to say for n(i, j) potential edges could be formed with n(i-1, j),
     #n(i, j-1), n(i+1, j), n(i, j+1). The chance that a certain edge does NOT exist is given by the 
-    #deletion_chance parameter.
+    #deletion_chance parameter, if one is given at all.
     
     for i in range(0, side_length):
         for j in range(0, side_length):      
@@ -106,10 +117,9 @@ def locate_vertex(vertex_list, name):
     for a in range(0, len(vertex_list)):
         if vertex_list[a].name == name:
             return a
-    #Try-catch-Block wäre angebracht
     return -1
 
-def random_triangular_graph(lower_node_limit, upper_node_limit, deletion_chance = 0):
+def random_triangular_graph(lower_node_limit=3, deletion_chance = 0):
     
     n_nodes = 0
     vertex_list = []
@@ -117,30 +127,25 @@ def random_triangular_graph(lower_node_limit, upper_node_limit, deletion_chance 
     edge_names = []
     
     #Number of nodes
-    if lower_node_limit == upper_node_limit:
-        nodes_limit = lower_node_limit
-    else:
-        nodes_limit = np.random.randint(low = lower_node_limit, high = upper_node_limit)
-       
+    nodes_limit = lower_node_limit      
     #For the graph, we want a triangle with sides of equal length, therefore:
     side_length = 1
-    while n_nodes <= nodes_limit:
+    while n_nodes < nodes_limit:
         n_nodes += side_length
         side_length += 1
     
     side_length -= 1
     
-    #The triangular graph is best envisioned as if it had 3 dimensions/is a 3 dimensional object compressed to a planar space...
+    #The triangular graph is best envisioned as if it had 3 dimensions/is a 3 dimensional object compressed to a planar space.
     for x in range(0, side_length):
         for y in range(0, side_length):
             for z in range(0, side_length):
                 
                 if (x + y + z) == side_length-1:
                     node_identity = str(x) + '_' + str(y) + '_' + str(z)
-                    print(node_identity)
                     vertex_list.append(Vertex(node_identity))
                 
-    #In a triangular graph, the potential partners for edge construction of a given node n are: n(+1,+0,-1), n(+1,-1,+0), 
+    #If we treat the Object as a pseudo 3D-Object, then in a triangular graph, the potential partners for edge construction of a given node n are: n(+1,+0,-1), n(+1,-1,+0), 
     #n(+0,-1,+1), n(-1,+0,+1), n(-1,+1,0), n(+0,+1,-1). Given that these vertices exist, of course.
     for vertex in vertex_list:
         coordinates = (vertex.name.split('_'))
@@ -189,6 +194,18 @@ def random_triangular_graph(lower_node_limit, upper_node_limit, deletion_chance 
 
     return Graph(vertex_list, edge_list)
     
+
+def complete_graph(nodes):
+    
+    v_list = []
+    e_list = []
+    for i in range(0, nodes):
+        v_list.append(Vertex(i))
+    for i in range(0, nodes-1):
+        for x in range(i+1, nodes):
+            e_list.append(Edge(v_list[i], v_list[x]))
+    return Graph(v_list, e_list)
+
 
 #Just a small tool to randomly delete edges in a graph based on chance
 def cut_edges(graph, chance):
