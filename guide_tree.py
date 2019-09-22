@@ -24,11 +24,14 @@ def score_similarity(g1, g2):
 
 class guide_tree:
     
-    def __init__(self, graph_list: [] = None, construct_tree = True):
+    def __init__(self, graph_list: [] = None, construct_tree = True,  name = None):
         
         #If a tree should be build as a graph, the graphs will need to have names.
         tree_nodes = []
         tree_branches = []
+        self.graph_list = graph_list
+        self.construct_tree = construct_tree
+        self.name = name
         
         #This starts building the leaves for the output guide tree:
         if construct_tree == True:
@@ -175,8 +178,8 @@ class guide_tree:
     def create_Newick(self):
         return ""
     
-def create_tree(graph_list, draw_tree = False):
-    return guide_tree(graph_list, draw_tree)
+def create_tree(graph_list, draw_tree = True, name = None):
+    return guide_tree(graph_list, draw_tree, name)
 
 def traverse_tree(tree, graph_list):
     graph_dict = {}
