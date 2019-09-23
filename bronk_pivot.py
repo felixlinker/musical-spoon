@@ -1,13 +1,17 @@
 import random
 import itertools
 import timeit
-from parser2 import parse
 from graph import *
-from edge import  *
+from edge import *
 from vertex import *
-from show_graph import *
 
-# TODO Überprüfen ob Vergleich von Namen ausreicht oder lieber Objektvergleich genutzt werden soll neighbors()
+# --------------------------------------------------------------------------------------------------
+# global Variables
+random_pivot = False # beeinflusst wahl des pivot-elements in bronk()
+longest_vlist = 0   # globale Variable, um nur größte Clique zurückzugeben
+no_of_mcis = []     # sind essentiell für die folgenden Funktionen
+checklabel = False  # wird True gesetzt wenn nur Knoten mit identischen Label gematcht werden dürfen
+# --------------------------------------------------------------------------------------------------
 
 
 # Neighborfunktion zur Berechnung des Modularen Produktes
@@ -60,14 +64,10 @@ def modular_product(graph, graph1):
     return Graph(m_vertex_list, m_edge_list)
 
 
-longest_vlist = 0   # globale Variable, um nur größte Clique zurückzugeben
-no_of_mcis = []     # sind essentiell für die folgenden Funktionen
-
-
 # speichert die von bronk bisher längste gesehene Vertexlist
 def determine_mcis(v_list):
     global longest_vlist, mcis, no_of_mcis
-    if len(v_list) > longest_vlist:    # TODO Möglichkeit einbauen mehreren gleich langen Listen auszugeben
+    if len(v_list) > longest_vlist:
         longest_vlist = len(v_list)
         mcis = v_list
     if len(v_list) == longest_vlist:
@@ -119,7 +119,6 @@ def build_graph_outof_vlist(vlist, graph1):
                         edge_in_graph = True
                 if edge_in_graph == False:
                     new_graph.add_edges(new_e)
-    #TODO no_of_vertices, no_of_edges, etc nötig?
     return new_graph
 
 
@@ -168,8 +167,10 @@ def find_pivot_randomly(p, x):
 
 # the Bron-Kerbosch recursive algorithm
 def bronk(r, p, x, firstrun):
-    # p_with_pivot = find_pivot(p, x)
-    p_with_pivot = find_pivot_randomly(p, x)
+    if random_pivot == False:
+        p_with_pivot = find_pivot(p, x)
+    else:
+        p_with_pivot = find_pivot_randomly(p, x)
     if len(p) == 0 and len(x) == 0:
         if firstrun:
             determine_mcis(r)
@@ -198,8 +199,10 @@ def find_cliques(graphobject, firstrun):
     bronk([], graph.vertices, [], firstrun)
 
 
-def find_mcis(graph1, graph2, checklabels=None):
-    global longest_vlist, checklabel
+def find_mcis(graph1, graph2, checklabels=None, choose_pivot_randomly=None):
+    global longest_vlist, checklabel, random_pivot
+    if choose_pivot_randomly:
+        random_pivot = True
     if checklabels:
         checklabel = True
     longest_vlist = 0
@@ -224,8 +227,12 @@ def find_mcis(graph1, graph2, checklabels=None):
 
 #Dieser hier wird für den Guidetree als Alternative benötigt, da wir zur Konstruktion nie mehr
     #als den maximum subgraph brauchen.
-def find_mcis_without_prompt(graph1, graph2):
-    global longest_vlist
+def find_mcis_without_prompt(graph1, graph2, checklabels=None, choose_pivot_randomly=None):
+    global longest_vlist, checklabel, random_pivot
+    if choose_pivot_randomly:
+        random_pivot = True
+    if checklabels:
+        checklabel = True
     longest_vlist = 0
     mod_graph = modular_product(graph1, graph2)
     print('Finding Maximal Common Induced Subgraphs...')
@@ -279,14 +286,18 @@ def get_anker_nodes(modgraph, anker):
     return ankernodes
 
 
-def find_ankered_mcis(graph1, graph2, anker):
+def find_ankered_mcis(graph1, graph2, anker, checklabels=None, choose_pivot_randomly=None):
     '''
     :param graph1: als Graphobjekt
     :param graph2: als Graphobjekt
     :param anker: als Liste in folgendem Format ankerlist = ['v1;v2', 'v3;v4', ...]
     :return: graph-objekt
     '''
-    global longest_vlist
+    global longest_vlist, checklabel, random_pivot
+    if choose_pivot_randomly:
+        random_pivot = True
+    if checklabels:
+        checklabel = True
     longest_vlist = 0
     mod_graph = modular_product(graph1, graph2)
     print('Finding Maximal Common Induced Subgraphs...')
