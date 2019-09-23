@@ -239,7 +239,7 @@ def find_mcis_without_prompt(graph1, graph2, checklabels=None, choose_pivot_rand
     find_cliques(mod_graph, firstrun=True)
     mcis_graph = build_graph_outof_vlist(mcis, graph1)
     if graph1.name != None and graph2.name != None:
-        mcis_graph.name = str(graph1.name + '_' + graph2.name)
+        mcis_graph.name = str('(' + graph1.name + ',' + graph2.name + ')')
         print("Graph created: " + str(mcis_graph.name))
     print('Vertices:', len(mcis_graph.vertices), 'Edges:', len(mcis_graph.edges))
     return mcis_graph

@@ -169,14 +169,14 @@ class guide_tree:
             tree_branches.append(e2)
             self.tree_structure = Graph(tree_nodes, tree_branches)
             
-
+        self.newick = str(self.result.name)
+        print("Resulting tree:" + self.newick)
         #-------------------------------------------------
     
     #The following section is incomplete, as there is currently no working way to parse this mess
     #into Newick format.    
         
-    def create_Newick(self):
-        return ""
+
     
 def create_tree(graph_list, draw_tree = True, name = None):
     return guide_tree(graph_list, draw_tree, name)
@@ -189,7 +189,7 @@ def traverse_tree(tree, graph_list):
         
     for i in range(0, len(tree.tree_structure.vertices)):
         hold = []
-        if '_' in tree.tree_structure.vertices[i].name:
+        if ',' in tree.tree_structure.vertices[i].name:
             #print(str(tree.tree_structure.vertices[i].name))
             for e in tree.tree_structure.edges:
                 #print(str(e.vertex_a.name))
