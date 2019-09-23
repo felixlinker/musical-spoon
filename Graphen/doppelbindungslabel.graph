@@ -10,12 +10,12 @@ Directed graph;False
 6;6
 7;6
 8;6
-9;6
+9;1
 
 2;9;einfach
 2;3;einfach
 3;4;einfach
-4;6;einfach
+4;6;doppelt
 6;7;einfach
 7;8;einfach
 7;9;einfach

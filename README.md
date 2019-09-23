@@ -9,9 +9,10 @@
 - [X] Implementation von Bron-Kerbosch mit pivot (pivot entweder zufällig wählbar oder wie in der VL besprochen)
 - [X] Ankereingabe bei Bron-Kehrbosch implementiert
 - [X] Implementation von Cordella
+- [X] Regeln für Knoten-Matching
 - [ ] Guidetree aus Newick-Format
 - [ ] Newick-format aus fertigen Guide-Trees erzeugen
 
                 
 **Nicht zugewiesen**
-- [ ] Regeln für Knoten/Kanten-Matching
+- [ ] Regeln für Kanten-Matching
