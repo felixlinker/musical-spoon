@@ -213,8 +213,8 @@ def traverse_tree(tree, graph_list):
 #The following function just aligns given list of preordered graphs in linear fashion.
 def traverse_linear(ordered_graphs):
         
-    tmp = []
-    for n in range(0, len(ordered_graphs)):
+    tmp = ordered_graphs[0]
+    for n in range(1, len(ordered_graphs)):
         tmp = guide_tree.call_subgraph_algorithm(tmp, ordered_graphs[n])
         
     return tmp
