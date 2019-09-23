@@ -31,8 +31,6 @@ def mod_neighbors(vertex, graph):
     return neighbor_list
 
 
-checklabel = False  # wird True gesetzt wenn nur Knoten mit identischen Label gematcht werden dürfen
-
 
 def modular_product(graph, graph1):
     m_vertex_list = []
@@ -42,9 +40,9 @@ def modular_product(graph, graph1):
     for i in itertools.product(graph.vertices, graph1.vertices): # Kartesisches Produkt der beiden Graphen -> wird in neuer Klasse abgespeicher
         if checklabel:
             if i[0].label == i[1].label:
-                m_vertex_list.append(ModularVertex(i[0].name+';'+i[1].name, i[0], i[1]))
+                m_vertex_list.append(ModularVertex(str(i[0].name)+';'+str(i[1].name), i[0], i[1]))
         else:
-            m_vertex_list.append(ModularVertex(i[0].name + ';' + i[1].name, i[0], i[1]))
+            m_vertex_list.append(ModularVertex(str(i[0].name) + ';' + str(i[1].name), i[0], i[1]))
 
     for k in m_vertex_list:  # doppelte For-Schleife, um alle Beziehungen abzudecken
         for l in m_vertex_list:
