@@ -188,10 +188,14 @@ def traverse_tree(tree, graph_list):
         graph_dict.update({graph_list[n].name: graph_list[n]})
         
     for i in range(0, len(tree.tree_structure.vertices)):
+        hold = []
         if '_' in tree.tree_structure.vertices[i].name:
+            #print(str(tree.tree_structure.vertices[i].name))
             for e in tree.tree_structure.edges:
-                
-                if e.vertex_b.name == tree.tree_structure.vertices[i].name and len(e.vertex_a.name) < len(tree.tree_structure.vertices[i].name):
+                #print(str(e.vertex_a.name))
+                #print(str(e.vertex_b.name))
+                if (e.vertex_b.name == tree.tree_structure.vertices[i].name and len(e.vertex_a.name) < len(tree.tree_structure.vertices[i].name)) or \
+                (e.vertex_a.name == tree.tree_structure.vertices[i].name and len(e.vertex_b.name) < len(tree.tree_structure.vertices[i].name)):
                     hold.append(graph_dict.get(e.vertex_a.name))
                     
             g_add = call_subgraph_algorithm(hold[0], hold[1])
