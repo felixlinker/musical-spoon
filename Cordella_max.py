@@ -304,7 +304,7 @@ def match(s, g1, g2, v):
     depth = get_depth(s)
     match_made = False
 
-    print("Start matching round.")
+    # print("Start matching round.")
     if None not in s[0] or None not in s[1]:
         # Since we assume a graph-graph or a graph-subgraph isomorphism, if either core_1 or core_2 are completely filled,
         # we can consider the matching process to be complete. Furthermore, one of the two has to be filled by the end.

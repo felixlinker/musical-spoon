@@ -66,7 +66,7 @@ def random_graph(lower_node_limit=1, upper_node_limit=10, more_edges = False):
     
     
     
-def random_chess_graph(lower_node_limit=4, deletion_chance = 0):
+def random_chess_graph(lower_node_limit=4, deletion_chance = 0, name=None):
     
     #Note: It is absolutely crucial, that the deletion_chance parameter, if given, is a value in the interval (0, 1). Bad things happen otherwise. 
     #The deletion chance corresponds to the probability, that a given possible edge does NOT exist in the graph and is universal for all edges. 
@@ -82,7 +82,7 @@ def random_chess_graph(lower_node_limit=4, deletion_chance = 0):
     #This smoothes the for-loops later on, as we don't have to account for weird appdendices 
     while (np.sqrt(n_nodes) % 1 != 0):
        n_nodes += 1
-       
+
     side_length = int(np.sqrt(n_nodes))
     
     for i in range(0, side_length):
@@ -108,7 +108,7 @@ def random_chess_graph(lower_node_limit=4, deletion_chance = 0):
                 #Note: Given how the vertex_list is filled, the distance to the vertex n(i,j+1) is always constant
 
 
-    return Graph(vertex_list, edge_list)
+    return Graph(vertex_list, edge_list, name=name)
            
 
 def locate_vertex(vertex_list, name):
