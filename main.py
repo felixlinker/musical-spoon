@@ -7,8 +7,7 @@ import timeit
 
 def main():
 
-    # g1 = parse("./Graphen/scriptG1.graph")
-    # g2 = parse("./Graphen/cordellaTest1.graph")
+    number_of_graphs = 10
     number_of_nodes = 9
     deletion_chance = 0.1
 
@@ -17,35 +16,21 @@ def main():
 
     print('number of nodes:', number_of_nodes, 'with deletion chance:', deletion_chance)
 
-    g0 = random_chess_graph(number_of_nodes, deletion_chance, name='g0')
-    g1 = random_chess_graph(number_of_nodes, deletion_chance, name='g1')
-    g2 = random_chess_graph(number_of_nodes, deletion_chance, name='g2')
-    g3 = random_chess_graph(number_of_nodes, deletion_chance, name='g3')
-    g4 = random_chess_graph(number_of_nodes, deletion_chance, name='g4')
-    g5 = random_chess_graph(number_of_nodes, deletion_chance, name='g5')
-    g6 = random_chess_graph(number_of_nodes, deletion_chance, name='g6')
-    g7 = random_chess_graph(number_of_nodes, deletion_chance, name='g7')
-    g8 = random_chess_graph(number_of_nodes, deletion_chance, name='g8')
-    g9 = random_chess_graph(number_of_nodes, deletion_chance, name='g9')
-    # show_graph_comparable(g1, g2, g0)
-    # Cordella(g1, g2)
-    # mcis = find_mcis(g1, g2, checklabels=True)
+    graphs = dict()
+    for i in range(0, number_of_graphs):
+        graphs[i] = random_chess_graph(number_of_nodes, deletion_chance, name='g'+str(i))
 
-    gl = [g0, g1, g2, g3, g4, g5, g6, g7, g8, g9]
-    testees = len(gl)
-    tests = 0
+
+    tests = int(((len(graphs)-1)*(len(graphs)))/2) # gaussche summenformel um anzahl der tests zu berechnen
     c = 1
-    while testees-1 != 0:
-        tests += testees-1
-        testees += -1
 
     start = timeit.default_timer()
-    for i in range(0, len(gl)):
-        for j in range(i+1, len(gl)):
-            print('Testing ', gl[i].name, 'against', gl[j].name, '(', c, '/', tests, ')')
+    for i in range(0, len(graphs)):
+        for j in range(i+1, len(graphs)):
+            print('Testing ', graphs[i].name, 'against', graphs[j].name, '(', c, '/', tests, ')')
             c += 1
-            find_mcis_without_prompt(gl[i], gl[j])
-            # Cordella(gl[i], gl[j])
+            # find_mcis_without_prompt(graphs[i], graphs[j])
+            Cordella(graphs[i], graphs[j])
 
     stop = timeit.default_timer()
     print('time: ', stop - start)
