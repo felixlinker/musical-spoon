@@ -8,9 +8,30 @@ from edge import Edge
 from graph import Graph
 
 
-def create_output_table(s1, s2, g_1, g_2):
+def build_mcis_graph(vlist, graph):
+    # erstellt Graphen-Objekt aus Liste gematchter Knoten
+
+    new_graph = Graph()
+    neighbor_list = []
+    for edge in graph.edges:
+        neighbor_list.append("("+edge.vertex_a.name+","+edge.vertex_b.name+")")
+    for vertex in vlist:
+        o_vertex = Vertex(name=vertex) # TODO: Labels noch hinzufügen, sollten nicht verloren gehen
+        new_graph.add_vertex(o_vertex)
+    for v1 in range(0, len(new_graph.vertices)):
+        for v2 in range(1, len(new_graph.vertices)):
+            if "("+new_graph.vertices[v1].name+","+new_graph.vertices[v2].name+")" in neighbor_list \
+                    or "("+new_graph.vertices[v2].name+","+new_graph.vertices[v1].name+")" in neighbor_list:
+                new_edge = Edge(new_graph.vertices[v1],new_graph.vertices[v2])
+                new_graph.add_edges(new_edge)
+    return new_graph
+
+
+def create_output_table(s1, s2, g_1, g_2, g1, g2):
     # Last things first: This function creates an output table from the matched nodes after completing the program, which contains
     # the original node names.
+
+    vlist = [] # Liste zum Speichern von gemappten Vertices eines Graphen zur Erstellung eines MCIS-Graphen
 
     print("The following pairs were found (Graph 1 node; Graph 2 node):")
     if None not in s1:
@@ -18,12 +39,16 @@ def create_output_table(s1, s2, g_1, g_2):
             if g_1[i] is None or s1[i] is None:
                 break
             print("Matching nodes: " + str(g_1[i]) + ' ; ' + str(g_2[s1[i]]))
+            vlist.append(g_1[i])
+        return build_mcis_graph(vlist, g1)
 
     else:
         for i in range(0, len(s2)):
             if g_1[i] is None or s2[i] is None:
                 break
             print("Matching nodes: " + g_1[s2[i]] + ' ; ' + g_2[i])
+            vlist.append(g_2[i])
+        return build_mcis_graph(vlist, g2)
 
 
 def build_dict(Graph):
@@ -456,4 +481,4 @@ def Cordella(g1, g2):
         for i in range(0, len(g2.vertices)):
             g2.vertices[i].name = hold_g2[i]
 
-        create_output_table(cord[0], cord[1], hold_g1, hold_g2)
+        return create_output_table(cord[0], cord[1], hold_g1, hold_g2, g1, g2)
