@@ -12,17 +12,26 @@ def build_mcis_graph(vlist, graph):
     # erstellt Graphen-Objekt aus Liste gematchter Knoten
 
     new_graph = Graph()
-    neighbor_list = []
+    neighbor_list = []  # speichert alle im new_graph benötigten edges
     for edge in graph.edges:
         neighbor_list.append("("+edge.vertex_a.name+","+edge.vertex_b.name+")")
-    for vertex in vlist:
-        o_vertex = Vertex(name=vertex) # TODO: Labels noch hinzufügen, sollten nicht verloren gehen
-        new_graph.add_vertex(o_vertex)
+
+    # aus der Vlist(enthaelt strings) werden Vertex_objekt erstellt, durch abgleich mit Ursprungsgraphen
+    for gv in range(0, len(graph.vertices)):
+        if graph.vertices[gv].label is not None and graph.vertices[gv].name in vlist:
+            o_vertex = Vertex(name=graph.vertices[gv].name, label=graph.vertices[gv].label)  # TODO: Labels noch nicht getestet
+            new_graph.add_vertex(o_vertex)
+        elif graph.vertices[gv].label is None and graph.vertices[gv].name in vlist:
+            o_vertex = Vertex(name=graph.vertices[gv].name)
+            new_graph.add_vertex(o_vertex)
+
+    # Fuer jede Kombination aus Vertices aus New_graph wird durch Abgleich mit der neighbor_list getestet, ob eine
+    # Kante erstellt werden soll. ACHTUNG: bisher nur ungerichteter Fall behandelt!
     for v1 in range(0, len(new_graph.vertices)):
         for v2 in range(1, len(new_graph.vertices)):
             if "("+new_graph.vertices[v1].name+","+new_graph.vertices[v2].name+")" in neighbor_list \
                     or "("+new_graph.vertices[v2].name+","+new_graph.vertices[v1].name+")" in neighbor_list:
-                new_edge = Edge(new_graph.vertices[v1],new_graph.vertices[v2])
+                new_edge = Edge(new_graph.vertices[v1], new_graph.vertices[v2])
                 new_graph.add_edges(new_edge)
     return new_graph
 
