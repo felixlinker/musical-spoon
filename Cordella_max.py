@@ -62,7 +62,7 @@ def create_output_table(s1, s2, g_1, g_2, g1, g2, supergraph = False):
                 break
             print("Matching nodes: " + g_1[s2[i]] + ' ; ' + g_2[i])
             vlist.append(g_2[i])
-        new_graph = build_mcis_graph(vlist, g1)
+        new_graph = build_mcis_graph(vlist, g2)
         if supergraph == True:
             new_graph = add_supergraph_nodes(new_graph, g1, g2)
         return new_graph
