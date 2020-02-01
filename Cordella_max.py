@@ -3,6 +3,7 @@
 Created on Tue Jun 18 16:52:41 2019
 @author: Arctandra
 """
+from bronk_pivot import add_supergraph_nodes
 from vertex import Vertex
 from edge import Edge
 from graph import Graph
@@ -33,10 +34,11 @@ def build_mcis_graph(vlist, graph):
                     or "("+new_graph.vertices[v2].name+","+new_graph.vertices[v1].name+")" in neighbor_list:
                 new_edge = Edge(new_graph.vertices[v1], new_graph.vertices[v2])
                 new_graph.add_edges(new_edge)
+
     return new_graph
 
 
-def create_output_table(s1, s2, g_1, g_2, g1, g2):
+def create_output_table(s1, s2, g_1, g_2, g1, g2, supergraph = False):
     # Last things first: This function creates an output table from the matched nodes after completing the program, which contains
     # the original node names.
 
@@ -49,7 +51,10 @@ def create_output_table(s1, s2, g_1, g_2, g1, g2):
                 break
             print("Matching nodes: " + str(g_1[i]) + ' ; ' + str(g_2[s1[i]]))
             vlist.append(g_1[i])
-        return build_mcis_graph(vlist, g1)
+        new_graph = build_mcis_graph(vlist, g1)
+        if supergraph == True:
+            new_graph = add_supergraph_nodes(new_graph, g1, g2)
+        return new_graph
 
     else:
         for i in range(0, len(s2)):
@@ -57,7 +62,10 @@ def create_output_table(s1, s2, g_1, g_2, g1, g2):
                 break
             print("Matching nodes: " + g_1[s2[i]] + ' ; ' + g_2[i])
             vlist.append(g_2[i])
-        return build_mcis_graph(vlist, g2)
+        new_graph = build_mcis_graph(vlist, g1)
+        if supergraph == True:
+            new_graph = add_supergraph_nodes(new_graph, g1, g2)
+        return new_graph
 
 
 def build_dict(Graph):
@@ -437,7 +445,7 @@ def match(s, g1, g2, v):
 #         print("No initial match found.")
 
 
-def Cordella(g1, g2):
+def Cordella(g1, g2, supergraph = False):
     # For...."Implementation reasons"....if the graphs are not equal in size, the first one must be the bigger one. Otherwise, the
     # Feasibility function will act up. Therefore, if g1 is smaller than g2, their positions are swapped.
     if len(g1.vertices) < len(g2.vertices):
@@ -490,4 +498,4 @@ def Cordella(g1, g2):
         for i in range(0, len(g2.vertices)):
             g2.vertices[i].name = hold_g2[i]
 
-        return create_output_table(cord[0], cord[1], hold_g1, hold_g2, g1, g2)
+        return create_output_table(cord[0], cord[1], hold_g1, hold_g2, g1, g2, supergraph)

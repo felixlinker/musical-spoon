@@ -225,7 +225,7 @@ def find_mcis(graph1, graph2, checklabels=None, choose_pivot_randomly=None):
 
 #Dieser hier wird für den Guidetree als Alternative benötigt, da wir zur Konstruktion nie mehr
     #als den maximum subgraph brauchen.
-def find_mcis_without_prompt(graph1, graph2, checklabels=None, choose_pivot_randomly=None):
+def find_mcis_without_prompt(graph1, graph2, checklabels=None, choose_pivot_randomly=None, supergraph=False):
     global longest_vlist, checklabel, random_pivot
     if choose_pivot_randomly:
         random_pivot = True
@@ -240,6 +240,8 @@ def find_mcis_without_prompt(graph1, graph2, checklabels=None, choose_pivot_rand
         mcis_graph.name = str('(' + graph1.name + ',' + graph2.name + ')')
         print("Graph created: " + str(mcis_graph.name))
     print('Vertices:', len(mcis_graph.vertices), 'Edges:', len(mcis_graph.edges))
+    if supergraph == True:
+        mcis_graph = add_supergraph_nodes(mcis_graph, graph1, graph2)
     return mcis_graph
 
 
@@ -284,7 +286,7 @@ def get_anker_nodes(modgraph, anker):
     return ankernodes
 
 
-def find_ankered_mcis(graph1, graph2, anker, checklabels=None, choose_pivot_randomly=None):
+def find_ankered_mcis(graph1, graph2, anker, checklabels=None, choose_pivot_randomly=None, supergraph=False):
     '''
     :param graph1: als Graphobjekt
     :param graph2: als Graphobjekt
@@ -303,4 +305,50 @@ def find_ankered_mcis(graph1, graph2, anker, checklabels=None, choose_pivot_rand
     find_cliques_with_anker(mod_graph, ankernodes, firstrun=True)
     mcis_graph = build_graph_outof_vlist(mcis, graph1)
     print('Vertices:', len(mcis_graph.vertices), 'Edges:', len(mcis_graph.edges))
+    if supergraph == True:
+        mcis_graph = add_supergraph_nodes(mcis_graph, graph1, graph2)
     return mcis_graph
+
+def add_supergraph_nodes(mcis, g1, g2):
+    mcis_names = mcis.get_vertex_names()
+    mcis_left = []
+    mcis_right = []
+    for name in mcis_names:
+        mcis_split = name.split(';')
+        mcis_left.append(mcis_split[0]), 
+        mcis_right.append(mcis_split[1])
+    
+    for name in g1.get_vertex_names(): 
+       if name not in mcis_left:
+           mcis.add_vertex(Vertex(name + ';_'))
+           mcis_left.append(name)
+    for name in g2.get_vertex_names():
+       if name not in mcis_right:
+           mcis.add_vertex(Vertex('_;' + name))
+           mcis_right.append(name)
+           
+    for edge in g1.edges:
+        v1, v2 = None, None
+        for vertex in mcis.vertices:
+            if edge.vertex_a.name == vertex.name.split(';')[0]:
+                v1 = vertex
+            if edge.vertex_b.name == vertex.name.split(';')[0]:
+                v2 = vertex
+            elif v1 != None and v2 != None:
+                break
+        e = Edge(v1, v2)
+        mcis.add_edges(e)
+    for edge in g2.edges:
+        v1, v2 = None, None
+        for vertex in mcis.vertices:
+            if edge.vertex_a.name == vertex.name.split(';')[1]:
+                v1 = vertex
+            if edge.vertex_b.name == vertex.name.split(';')[1]:
+                v2 = vertex
+            elif v1 != None and v2 != None:
+                break
+        e = Edge(v1, v2)
+        mcis.add_edges(e)
+            
+    return mcis
+

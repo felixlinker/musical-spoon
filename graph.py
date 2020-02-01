@@ -28,6 +28,12 @@ class Graph:
     def get_edges(self):
         return self.edges
     
+    def get_vertex_names(self):
+        names = []
+        for vertex in self.vertices:
+            names.append(vertex.name)
+        return names
+    
     def remove_edge(self, e):
         if e in self.edges:
             e.cut_predecessors()
@@ -37,3 +43,4 @@ class Graph:
             print("The edge to remove is not in the given graph.")
     # def __str__(self):
     #     return '(vertices: %s, edges: %s)' % (self.vertices, self.edges)
+    
