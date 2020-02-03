@@ -6,15 +6,20 @@ Created on Mon Sep  2 13:57:44 2019
 
 import numpy as np
 from vertex import Vertex
+import show_graph
 from edge import Edge
 from graph import Graph
 from bronk_pivot import find_mcis_without_prompt
 
-def call_subgraph_algorithm(g1, g2):
+def call_subgraph_algorithm(g1, g2, supergraph=True):
         
     #This is a placeholder right now, but this function handles the pipeline to the 
     #actual alignment algorithms later on.
-    return find_mcis_without_prompt(g1, g2)
+    mcis_sup = find_mcis_without_prompt(g1, g2, supergraph=True)
+    for v in mcis_sup.vertices:
+        v.name = v.name.replace(';', ':')
+    
+    return mcis_sup
     
     
 def score_similarity(g1, g2):
@@ -22,9 +27,12 @@ def score_similarity(g1, g2):
     #similarityof two graphs...
     return abs(len(g1.edges) - len(g2.edges))
 
+def add_missing_nodes(mcis, g1, g2):
+    return None
+
 class guide_tree:
     
-    def __init__(self, graph_list: [] = None, construct_tree = True,  name = None):
+    def __init__(self, graph_list: [] = None, construct_tree = True,  name = None, supergraph = True):
         
         #If a tree should be build as a graph, the graphs will need to have names.
         tree_nodes = []
@@ -32,6 +40,7 @@ class guide_tree:
         self.graph_list = graph_list
         self.construct_tree = construct_tree
         self.name = name
+        self.supergraph = supergraph
         
         #This starts building the leaves for the output guide tree:
         if construct_tree == True:
@@ -82,7 +91,10 @@ class guide_tree:
         while l > 1 or hold_last != None:
             tmp = []
             for n in range(0, len(pairs)):
-                a = call_subgraph_algorithm(pairs[n][0], pairs[n][1])
+                a = call_subgraph_algorithm(pairs[n][0], pairs[n][1], self.supergraph)
+                show_graph.show_graph(pairs[n][0])
+                show_graph.show_graph(pairs[n][1])
+                show_graph.show_graph(a)
                 tmp.append(a)
                 #Continue building the graph representation of the tree, if needed:
                 if construct_tree == True:
@@ -118,7 +130,7 @@ class guide_tree:
                             m_hold_index = n
                 
                 tmp_tmp = tmp[m_hold_index]
-                tmp[m_hold_index] = call_subgraph_algorithm(tmp[m_hold_index], hold_last)
+                tmp[m_hold_index] = call_subgraph_algorithm(tmp[m_hold_index], hold_last, self.supergraph)
                 if construct_tree == True:
                     v = Vertex(str(tmp[m_hold_index].name))
                     tree_nodes.append(v)
@@ -158,7 +170,7 @@ class guide_tree:
         
         #The result variable contains the maximum subgraph accoding to the heuristics of the
         #progressive alignment
-        self.result = call_subgraph_algorithm(pairs[0][0], pairs[0][1])
+        self.result = call_subgraph_algorithm(pairs[0][0], pairs[0][1], self.supergraph)
         if construct_tree == True:
             v = Vertex(str(self.result.name))
             tree_nodes.append(v)
@@ -178,10 +190,10 @@ class guide_tree:
         
 
     
-def create_tree(graph_list, draw_tree = True, name = None):
-    return guide_tree(graph_list, draw_tree, name)
+def create_tree(graph_list, draw_tree = True, name = None, supergraph = True):
+    return guide_tree(graph_list, draw_tree, name, supergraph)
 
-def traverse_tree(tree, graph_list):
+def traverse_tree(tree, graph_list, supergraph = True):
     graph_dict = {}
     hold = []
     for n in range(0, len(graph_list)):
@@ -198,7 +210,7 @@ def traverse_tree(tree, graph_list):
                 (e.vertex_a.name == tree.tree_structure.vertices[i].name and len(e.vertex_b.name) < len(tree.tree_structure.vertices[i].name)):
                     hold.append(graph_dict.get(e.vertex_a.name))
                     
-            g_add = call_subgraph_algorithm(hold[0], hold[1])
+            g_add = call_subgraph_algorithm(hold[0], hold[1], supergraph)
             graph_list.append(g_add)
             graph_dict.update({g_add.name: g_add})
     
@@ -211,11 +223,11 @@ def traverse_tree(tree, graph_list):
     return hold
 
 #The following function just aligns given list of preordered graphs in linear fashion.
-def traverse_linear(ordered_graphs):
+def traverse_linear(ordered_graphs, supergraph = True):
         
     tmp = ordered_graphs[0]
     for n in range(1, len(ordered_graphs)):
-        tmp = guide_tree.call_subgraph_algorithm(tmp, ordered_graphs[n])
+        tmp = guide_tree.call_subgraph_algorithm(tmp, ordered_graphs[n], supergraph)
         
     return tmp
         
