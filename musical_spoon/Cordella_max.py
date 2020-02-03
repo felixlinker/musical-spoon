@@ -3,10 +3,10 @@
 Created on Tue Jun 18 16:52:41 2019
 @author: Arctandra
 """
-from bronk_pivot import add_supergraph_nodes
-from vertex import Vertex
-from edge import Edge
-from graph import Graph
+from .bronk_pivot import add_supergraph_nodes
+from .vertex import Vertex
+from .edge import Edge
+from .graph import Graph
 
 
 def build_mcis_graph(vlist, graph):

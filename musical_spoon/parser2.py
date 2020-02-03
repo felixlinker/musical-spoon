@@ -1,9 +1,9 @@
 '''
 Uses a graph-file as input and creates a Graph-Object out of Vertex and Edge Objects
 '''
-from vertex import Vertex
-from edge import Edge
-from graph import Graph
+from .vertex import Vertex
+from .edge import Edge
+from .graph import Graph
 from mendeleev import element
 
 

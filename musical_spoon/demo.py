@@ -1,4 +1,4 @@
-from core import *
+from . import *
 
 print("Willkommen! Dies stellt eine Demo der Hauptfunktionen des musical-spoon-packages dar.\n Zunaechst wird aus drei Knoten und drei Kanten ein einfaches Graph-Objekt erstellt und anschliessend graphisch dargestellt.")
 v1 = Vertex(1, 'A')

@@ -1,4 +1,4 @@
-from vertex import Vertex
+from .vertex import Vertex
 
 
 class Edge:
@@ -39,7 +39,7 @@ class Edge:
             self.vertex_a.successors.remove(self.vertex_b)
         if self.vertex_a in self.vertex_b.successors:
             self.vertex_b.successors.remove(self.vertex_a)
-        
+
     def cut_predecessors(self):
         if self.vertex_b in self.vertex_a.predecessors:
             self.vertex_a.predecessors.remove(self.vertex_b)

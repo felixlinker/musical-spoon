@@ -3,28 +3,28 @@
 Created on Tue Jun 18 16:52:41 2019
 @author: Arctandra
 """
-from vertex import Vertex
-from edge import Edge
-from graph import Graph
+from .vertex import Vertex
+from .edge import Edge
+from .graph import Graph
 
 
 def create_output_table(s1, s2, g_1, g_2):
     #Last things first: This function creates an output table from the matched nodes after completing the program, which contains
-    #the original node names. 
-    
+    #the original node names.
+
     print("The following pairs were found (Graph 1 node; Graph 2 node):")
     if None not in s1:
         for i in range(0, len(s1)):
             if g_1[i] is None or s1[i] is None:
                 break
             print("Matching nodes: " + str(g_1[i]) + ' ; ' + str(g_2[s1[i]]))
-    
+
     else:
         for i in range(0, len(s2)):
             if g_1[i] is None or s2[i] is None:
                 break
             print("Matching nodes: " + g_1[s2[i]] + ' ; ' + g_2[i])
-    
+
 def build_dict(Graph):
     vertex_dict = {}
     for vertex1 in Graph.vertices:                             # dict um über den Namen auf das Objekt zugreifen zu können
@@ -47,8 +47,8 @@ def find_successors(v):
                 # several times.
                 out.append(v.successors[i].name)
                 #out += find_successors(v.successors[i])
-                
-        
+
+
         out2 = []
         for i in range(0, len(out)):
             if out[i] not in out2:
@@ -80,8 +80,8 @@ def find_predecessors(v):
     else:
 
         return []
-    
-#The next function is mainly used for the alignment of chemical graphs - it ensures that only nodes representing the same type of 
+
+#The next function is mainly used for the alignment of chemical graphs - it ensures that only nodes representing the same type of
 #nuclei are mapped onto each other. Can be ignored for other graphs, since their node labels are "None".
 def atomic_identity(x,y, g1, g2):
     if g1.vertices[x].label == g2.vertices[y].label:
@@ -274,15 +274,15 @@ def match(s, g1, g2):
                 for a in find_successors(g1.vertices[n]):
                     if s[0][a] == None and a not in s[2]:
                         s[2][a] = 1
-                        
+
                 for a in find_successors(g2.vertices[p[1]]):
                     if s[1][a] == None and a not in s[3]:
                         s[3][a] = 1
-                        
+
                 for a in find_predecessors(g1.vertices[n]):
                     if s[0][a] == None and a not in s[4]:
                         s[4][a] = 1
-                        
+
                 for a in find_predecessors(g2.vertices[p[1]]):
                     if s[1][a] == None and a not in s[5]:
                         s[5][a] = 1
@@ -300,14 +300,14 @@ def initialize_match(s, g1, g2):
     # future addition to the core_1 and core_2 vectors by removing the new matching nodes from the in_1, in_2, ou_1, out_2 vectors.
     print("Initialize first match...")
     found = False
-    
+
     for n in g1.vertices:
         if found:
                 break
         for m in g2.vertices:
-            
+
             if F(s, n.name, m.name, g1, g2):
-                
+
                 #Here, the nodes that are predecessors or successors of a matched node are added to the respective vectors
                 print("Found one")
                 s[0][n.name] = g2.vertices[0].name
@@ -339,19 +339,19 @@ def initialize_match(s, g1, g2):
 
 def Cordella(g1, g2):
     #For...."Implementation reasons"....if the graphs are not equal in size, the first one must be the bigger one. Otherwise, the
-    #Feasibility function will act up. Therefore, if g1 is smaller than g2, their positions are swapped. 
+    #Feasibility function will act up. Therefore, if g1 is smaller than g2, their positions are swapped.
     if len(g1.vertices) < len(g2.vertices):
         g1_temp = g1
         g1 = g2
         g2 = g1_temp
-    
+
     #This should probably be changed later on, but we have to give our nodes unifiying names for comparability. But if we need
     #the names later on (for chemical graphs), here they are:
     hold_g1 = []
     hold_g2 = []
     #hold_g1.append(None)
     #hold_g2.append(None)
-    
+
     for i in range(0, len(g1.vertices)):
         hold_g1.append(g1.vertices[i].name)
         g1.vertices[i].name = int(i)
@@ -377,7 +377,7 @@ def Cordella(g1, g2):
     print("Initialize complete.")
     # Call the Matching function
     cord = initialize_match(s, g1, g2)
-    
+
     #Make use of the output:
     if cord == None:
         print("Invalid pairs - no isomorphism could be found.")
